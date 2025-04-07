@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory="templates")
 app.mount(f"/assets", StaticFiles(directory="static/assets"), name="static")
 
 # Add our middleware for DataRobot Custom Applications
-app.add_middleware(datarobot_middleware.DataRobotMiddleWare)
+app.add_middleware(datarobot_middleware.DataRobotASGIMiddleWare, use_health=True)
 
 @base_router.get("/")
 async def root(request: Request):
@@ -31,8 +31,7 @@ async def health():
     """
     Health check endpoint for Kubernetes probes.
 
-    If you don't want this, remove DataRobotMiddleWare
-    from the middleware stack above when you delete it.
+    If you don't want this, delete `use_health=True` in the middleware.
     """
     return {"status": "healthy"}
 
