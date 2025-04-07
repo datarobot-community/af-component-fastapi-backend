@@ -21,6 +21,7 @@ app.mount(f"/assets", StaticFiles(directory="static/assets"), name="static")
 # Add our middleware for DataRobot Custom Applications
 app.add_middleware(datarobot_middleware.DataRobotASGIMiddleWare, use_health=True)
 
+
 @base_router.get("/")
 async def root(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
@@ -39,6 +40,7 @@ async def health():
 @api_router.get("/welcome")
 async def welcome():
     return {"message": "Welcome Engineer!"}
+
 
 app.include_router(base_router)
 app.include_router(api_router)

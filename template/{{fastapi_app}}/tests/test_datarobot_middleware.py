@@ -98,6 +98,25 @@ def test_internal_load_balancer_request(app, monkeypatch):
     assert response.json() == {"message": "hello"}
 
 
+def test_combined_internal_and_external_prefix(app, monkeypatch):
+    # Mock the SCRIPT_NAME environment variable
+    monkeypatch.setenv("SCRIPT_NAME", "/apps/67f3e8ac039772f090878752")
+    app.add_middleware(DataRobotASGIMiddleWare)
+
+    # Create a test client
+    client = TestClient(app)
+
+    # Request from the external load balancer with the internal prefix
+    response = client.get(
+        "/apps/67f3e8ac039772f090878752/",
+        headers={"x-forwarded-prefix": "/custom_applications/67f3e8ac039772f090878752"}
+    )
+
+    # Verify the response
+    assert response.status_code == 200
+    assert response.json() == {"message": "hello"}
+
+
 def test_static_files_with_external_proxy(app, tmp_path):
     # Create a test static file
     static_dir = tmp_path / "static" / "assets"
@@ -150,5 +169,15 @@ def test_static_files_with_internal_prefix(app, tmp_path, monkeypatch):
 
     # Test access through internal prefix
     response = client.get("/apps/67f3e8ac039772f090878752/assets/test.txt")
+    assert response.status_code == 200
+    assert response.text == "test content"
+
+    # Test access through external load balancer proxied through the internal load balancer
+    response = client.get(
+        "/apps/67f3e8ac039772f090878752/assets/test.txt",
+        headers={"x-forwarded-prefix": "/custom_applications/67f3e8ac039772f090878752"}
+    )
+
+    # Verify the response
     assert response.status_code == 200
     assert response.text == "test content"
