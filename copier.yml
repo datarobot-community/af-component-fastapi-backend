@@ -19,4 +19,4 @@ _external_data:
   base: "{{ base_answers_file }}"
 
 _subdirectory: template
-_answers_file: ".datarobot/react-{{ react_app_name }}-answers.yml"
+_answers_file: ".datarobot/react-{{ fastapi_app_name }}-answers.yml"
