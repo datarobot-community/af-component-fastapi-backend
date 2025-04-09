@@ -1,13 +1,13 @@
 # questions
 fastapi_app_name:
   type: str
-  default: "backend"
-  help: "The name/folder of your FastAPI Backend"
+  default: "web"
+  help: "The name/folder of your FastAPI Web App"
 
 fastapi_local_port:
   type: int
   default: "8000"
-  help: "The port to run this FastAPI backend"
+  help: "The port to run this FastAPI Web App"
   
 base_answers_file:
   type: str
@@ -19,4 +19,4 @@ _external_data:
   base: "{{ base_answers_file }}"
 
 _subdirectory: template
-_answers_file: ".datarobot/react-{{ fastapi_app_name }}-answers.yml"
+_answers_file: ".datarobot/answers/fastapi-{{ fastapi_app_name }}-answers.yml"
