@@ -11,7 +11,7 @@ fastapi_local_port:
   
 base_answers_file:
   type: str
-  default: ".datarobot/base-answers.yml"
+  default: ".datarobot/answers/base-answers.yml"
   help: "Path to the base component answers file"
 
 # Grab the base component answers to re-use answers
