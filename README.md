@@ -26,10 +26,12 @@ To work, it expects the base component https://github.com/datarobot/af-component
 
 To update
 
-`uvx copier update -a .datarobot/fastapi-{{ fastapi_app }}-answers.yml -A`
+`uvx copier update -a .datarobot/answers/fastapi-{{ fastapi_app }}.yml -A`
 
 To update all templates that are copied:
 
-`uvx copier update -a .datarobot/*-answers.yaml`
+`uvx copier update -a .datarobot/answers/* -A`
+
 or just
+
 `uvx copier update -a .datarobot/*`
