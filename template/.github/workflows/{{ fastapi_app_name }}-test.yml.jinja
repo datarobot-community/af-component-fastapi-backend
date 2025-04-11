@@ -18,7 +18,7 @@ jobs:
     runs-on: "ubuntu-latest"
     defaults:
       run:
-        working-directory: web
+        working-directory: {{ fastapi_app_name }}
 
     strategy:
       matrix:
@@ -37,9 +37,18 @@ jobs:
           python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
 
       - name: Install Dependencies
+        working-directory: {{ fastapi_app_name }}
         run: uv sync --all-extras --dev
 
+      - name: Run Static Checks
+        working-directory: {{ fastapi_app_name }}
+        run: |
+          uv run ruff format --check .
+          uv run ruff check .
+          uv run mypy --pretty .
+
       - name: Test
+        working-directory: {{ fastapi_app_name }}
         run: uv run pytest --cov --cov-report=html --cov-report=term --cov-report xml:.coverage.xml
 
       - name: Get Cover
