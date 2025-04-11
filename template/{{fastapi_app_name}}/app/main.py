@@ -42,4 +42,4 @@ app.include_router(api_router)
 
 # Important to be last so that we fall back to the static files if the
 # route is not found
-app.mount("/", StaticFiles(directory="static/"), name="static")
+app.mount("/", StaticFiles(directory="static/", html=True), name="static")
