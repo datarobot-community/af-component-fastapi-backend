@@ -1,0 +1,46 @@
+---
+name: Test {{ fastapi_app_name }}
+
+on:
+  push:
+    branches: ["main"]
+
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  tests:
+    name: "FastAPI: {{ fastapi_app_name }} {% raw %}${{ matrix.python-version }}{% endraw %}"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: "actions/checkout@v4"
+
+      # Ref: https://docs.astral.sh/uv/guides/integration/github/#installation
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+	working-directory: {{ fastapi_app_name }}
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+	working-directory: {{ fastapi_app_name }}
+        run: uv sync --all-extras --dev
+
+	     	
+      - name: Test
+	working-directory: {{ fastapi_app_name }}
+	run: uv run pytest --cov --cov-report=html --cov-report=term --cov-report xml:.coverage.xml
+
+      - name: Get Cover 
+        uses: orgoro/coverage@v3.2
+	working-directory: {{ fastapi_app_name }}	
+        with:
+          coverageFile: .coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
