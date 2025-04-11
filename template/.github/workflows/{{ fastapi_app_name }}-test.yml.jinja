@@ -3,6 +3,12 @@ name: Test {{ fastapi_app_name }}
 
 on:
   push:
+    branches: ["main"]
+    paths:
+      - '{{ fastapi_app_name }}/**.py'
+
+  pull_request:
+    branches: ["main"]
     paths:
       - '{{ fastapi_app_name }}/**.py'
 
