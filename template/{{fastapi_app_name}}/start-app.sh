@@ -5,8 +5,8 @@ export UV_CACHE_DIR=.uv
 
 # Get the number of CPU cores
 if [ -f /sys/fs/cgroup/cpu.max ] && ! grep -q "max" /sys/fs/cgroup/cpu.max; then
-    read max period < /sys/fs/cgroup/cpu.max
-    cpu_cores=$[$max/$period]
+    read -r max period < /sys/fs/cgroup/cpu.max
+    cpu_cores=$((max / period))
 else
     cpu_cores=$(nproc)
 fi
