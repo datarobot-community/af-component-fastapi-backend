@@ -2,7 +2,7 @@
 fastapi_app_name:
   type: str
   default: "web"
-  help: "The name/folder of your FastAPI Web App"
+  help: "The name/folder of your FastAPI Web App. Highly recommended to use python friendly name like frontend_app"
 
 fastapi_local_port:
   type: int
