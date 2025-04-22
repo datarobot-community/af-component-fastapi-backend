@@ -84,7 +84,7 @@ def get_{{fastapi_app_name}}_app_files(
 
 # Start of Pulumi settings and application infrastructure
 {{fastapi_app_name}}_app_env_name: str = "DATAROBOT_APPLICATION_ID"
-{{fastapi_app_name}}_application_path = project_dir / "{{fastapi_app_name}}"
+{{fastapi_app_name}}_application_path = project_dir.parent / "{{fastapi_app_name}}"
 
 {{fastapi_app_name}}_app_source_args = ApplicationSourceArgs(
     resource_name=f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]",
