@@ -60,7 +60,7 @@ def _prep_metadata_yaml(
 ) -> None:
     from jinja2 import BaseLoader, Environment
 
-    llm_runtime_parameter_specs = "\n".join(
+    runtime_parameter_specs = "\n".join(
         [
             textwrap.dedent(
                 f"""\
@@ -71,11 +71,13 @@ def _prep_metadata_yaml(
             for param in runtime_parameter_values
         ]
     )
+    if not runtime_parameter_specs:
+        runtime_parameter_specs = "    []"
     with open({{fastapi_app_name}}_application_path / "metadata.yaml.jinja") as f:
         template = Environment(loader=BaseLoader()).from_string(f.read())
     ({{fastapi_app_name}}_application_path / "metadata.yaml").write_text(
         template.render(
-            additional_params=llm_runtime_parameter_specs,
+            additional_params=runtime_parameter_specs,
         )
     )
 
