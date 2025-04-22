@@ -1,3 +1,4 @@
+import re
 import textwrap
 from typing import Sequence
 
@@ -9,6 +10,19 @@ from datarobot_pulumi_utils.schema.exec_envs import RuntimeEnvironments
 from datarobot_pulumi_utils.pulumi.stack import PROJECT_NAME
 
 from . import use_case, project_dir
+
+EXCLUDE_PATTERNS = [re.compile(pattern) for pattern in [r".*\.pyc"]]
+
+
+__all__ = [
+    "{{fastapi_app_name}}_app",
+    "{{fastapi_app_name}}_app_env_name",
+    "{{fastapi_app_name}}_app_resource_name",
+    "{{fastapi_app_name}}_app_runtime_parameters",
+    "{{fastapi_app_name}}_app_source",
+    "{{fastapi_app_name}}_application_path",
+    "get_{{fastapi_app_name}}_app_files",
+]
 
 
 def _prep_metadata_yaml(
@@ -30,16 +44,16 @@ def _prep_metadata_yaml(
             for param in runtime_parameter_values
         ]
     )
-    with open(application_path / "metadata.yaml.jinja") as f:
+    with open({{fastapi_app_name}}_application_path / "metadata.yaml.jinja") as f:
         template = Environment(loader=BaseLoader()).from_string(f.read())
-    (application_path / "metadata.yaml").write_text(
+    ({{fastapi_app_name}}_application_path / "metadata.yaml").write_text(
         template.render(
             additional_params=llm_runtime_parameter_specs,
         )
     )
 
 
-def get_app_files(
+def get_{{fastapi_app_name}}_app_files(
     runtime_parameter_values: Sequence[
         pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs
         | pulumi_datarobot.CustomModelRuntimeParameterValueArgs,
@@ -48,49 +62,58 @@ def get_app_files(
     _prep_metadata_yaml(runtime_parameter_values)
     # Get all files from application path
     source_files = [
-        (f.as_posix(), f.relative_to(application_path).as_posix())
-        for f in application_path.glob("**/*")
+        (f.as_posix(), f.relative_to({{fastapi_app_name}}_application_path).as_posix())
+        for f in {{fastapi_app_name}}_application_path.glob("**/*")
         if f.is_file() and "metadata.yaml" not in f.name
     ]
 
     # Add the metadata.yaml file
     source_files.append(
-        ((application_path / "metadata.yaml").as_posix(), "metadata.yaml")
+        (({{fastapi_app_name}}_application_path / "metadata.yaml").as_posix(), "metadata.yaml")
     )
+    source_files = [
+        (file_path, file_name)
+        for file_path, file_name in source_files
+        if not any(
+            exclude_pattern.match(file_name) for exclude_pattern in EXCLUDE_PATTERNS
+        )
+    ]
+
+    return source_files
 
 
 # Start of Pulumi settings and application infrastructure
-app_env_name: str = "DATAROBOT_APPLICATION_ID"
-application_path = project_dir / "{{fastapi_app_name}}"
+{{fastapi_app_name}}_app_env_name: str = "DATAROBOT_APPLICATION_ID"
+{{fastapi_app_name}}_application_path = project_dir / "{{fastapi_app_name}}"
 
-app_source_args = ApplicationSourceArgs(
+{{fastapi_app_name}}_app_source_args = ApplicationSourceArgs(
     resource_name=f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]",
     base_environment_id=RuntimeEnvironments.PYTHON_312_APPLICATION_BASE.value.id,
 ).model_dump(mode="json", exclude_none=True)
 
-app_resource_name: str = f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]"
-app_runtime_parameters: list[
+{{fastapi_app_name}}_app_resource_name: str = f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]"
+{{fastapi_app_name}}_app_runtime_parameters: list[
     pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs
 ] = []
 
-app_source = pulumi_datarobot.ApplicationSource(
-    files=get_app_files(runtime_parameter_values=app_runtime_parameters),
-    runtime_parameter_values=app_runtime_parameters,
+{{fastapi_app_name}}_app_source = pulumi_datarobot.ApplicationSource(
+    files=get_{{fastapi_app_name}}_app_files(runtime_parameter_values={{fastapi_app_name}}_app_runtime_parameters),
+    runtime_parameter_values={{fastapi_app_name}}_app_runtime_parameters,
     resources=pulumi_datarobot.ApplicationSourceResourcesArgs(
         resource_label=CustomAppResourceBundles.CPU_XL.value.id,
     ),
-    **app_source_args,
+    **{{fastapi_app_name}}_app_source_args,
 )
 
-app = pulumi_datarobot.CustomApplication(
-    resource_name=app_resource_name,
-    source_version_id=app_source.version_id,
+{{fastapi_app_name}}_app = pulumi_datarobot.CustomApplication(
+    resource_name={{fastapi_app_name}}_app_resource_name,
+    source_version_id={{fastapi_app_name}}_app_source.version_id,
     use_case_ids=[use_case.id],
     allow_auto_stopping=True,
 )
 
-pulumi.export(app_env_name, app.id)
+pulumi.export({{fastapi_app_name}}_app_env_name, {{fastapi_app_name}}_app.id)
 pulumi.export(
-    app_resource_name,
-    app.application_url,
+    {{fastapi_app_name}}_app_resource_name,
+    {{fastapi_app_name}}_app.application_url,
 )
