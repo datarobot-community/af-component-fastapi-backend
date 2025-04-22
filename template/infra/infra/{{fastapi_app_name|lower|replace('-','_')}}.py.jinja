@@ -25,7 +25,20 @@ from datarobot_pulumi_utils.pulumi.stack import PROJECT_NAME
 
 from . import use_case, project_dir
 
-EXCLUDE_PATTERNS = [re.compile(pattern) for pattern in [r".*\.pyc"]]
+EXCLUDE_PATTERNS = [
+    re.compile(pattern)
+    for pattern in [
+        r"tests.*",
+        r"\.coverage",
+        r".*\.DS_Store",
+        r".*\.pyc",
+        r"\.ruff_cache.*",
+        r"\.venv.*",
+        r"\.mypy_cache.*",
+        r"__pycache__.*",
+        r"\.pytest_cache.*",
+    ]
+]
 
 
 __all__ = [
