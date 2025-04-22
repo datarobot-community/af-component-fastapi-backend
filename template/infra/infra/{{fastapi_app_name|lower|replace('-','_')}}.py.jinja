@@ -58,6 +58,7 @@ def get_app_files(
         ((application_path / "metadata.yaml").as_posix(), "metadata.yaml")
     )
 
+
 # Start of Pulumi settings and application infrastructure
 app_env_name: str = "DATAROBOT_APPLICATION_ID"
 application_path = project_dir / "{{fastapi_app_name}}"
@@ -68,12 +69,12 @@ app_source_args = ApplicationSourceArgs(
 ).model_dump(mode="json", exclude_none=True)
 
 app_resource_name: str = f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]"
-app_runtime_parameters: list[pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs] = []
+app_runtime_parameters: list[
+    pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs
+] = []
 
 app_source = pulumi_datarobot.ApplicationSource(
-    files=get_app_files(
-        runtime_parameter_values=app_runtime_parameters
-    ),
+    files=get_app_files(runtime_parameter_values=app_runtime_parameters),
     runtime_parameter_values=app_runtime_parameters,
     resources=pulumi_datarobot.ApplicationSourceResourcesArgs(
         resource_label=CustomAppResourceBundles.CPU_XL.value.id,
