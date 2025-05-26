@@ -40,4 +40,4 @@ jobs:
         run: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
 
       - name: Run yamlfmt
-        run: yamlfmt -conf .yamlfmt.yml -lint ./mytemplate
+        run: yamlfmt -conf .yamlfmt.yaml -lint ./mytemplate
