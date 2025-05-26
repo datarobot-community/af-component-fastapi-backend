@@ -20,6 +20,18 @@ tasks:
       - uv run ruff check --fix "$SRCDIR"
       - uv run mypy --pretty "$SRCDIR"
 
+  lint-yaml:
+    desc: 🧹 Lint YAML files
+    silent: true
+    cmds:
+      - echo "🧹 Linting YAML files.."
+      - |
+        if ! command -v yamlfmt >/dev/null 2>&1; then
+          echo "❌ yamlfmt is not installed. Install it via `brew install yamlfmt` or `go install github.com/google/yamlfmt/cmd/yamlfmt@latest`.";
+          exit 1;
+        fi
+      - yamlfmt -conf .yamlfmt.yaml -lint ./tmp/template/
+
   lint-check:
     desc: 🧹 Check whether the codebase is linted
     cmds:
