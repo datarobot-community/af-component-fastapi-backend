@@ -13,6 +13,7 @@
 # limitations under the License.
 import json
 import os
+from pathlib import Path
 from datarobot_asgi_middleware import DataRobotASGIMiddleware
 from fastapi import FastAPI, APIRouter, Request
 from fastapi.responses import HTMLResponse
@@ -26,8 +27,8 @@ base_router = APIRouter()
 api_router = APIRouter(prefix="/api/v1")
 templates = Jinja2Templates(directory="templates")
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+ROOT_DIR = Path(__file__).parent.parent
+STATIC_DIR = ROOT_DIR / "static"
 
 # Add our middleware for DataRobot Custom Applications
 app.add_middleware(DataRobotASGIMiddleware, health_endpoint="/health")
@@ -46,7 +47,7 @@ def get_app_base_url(api_port: str) -> str:
 
 
 def get_manifest_assets(
-    manifest_path: str, entry: str = "index.html", app_base_url: str = "/"
+    manifest_path: Path, entry: str = "index.html", app_base_url: str = "/"
 ) -> dict[str, list[str]]:
     """
     Reads the Vite manifest and returns the JS and CSS files for the given entry.
@@ -89,7 +90,7 @@ app.include_router(api_router)
  # This is the base path for the app, used to serve static files and templates
 app.mount(
     "/assets",
-    StaticFiles(directory=os.path.join(STATIC_DIR, "assets")),
+    StaticFiles(directory=STATIC_DIR / "assets"),
     name="static",
 )
 
@@ -99,7 +100,7 @@ async def serve_root(request: Request) -> HTMLResponse:
     """
     Serve the React index.html for the all routes, injecting ENV variables and fixing asset paths.
     """
-    manifest_path = os.path.join(STATIC_DIR, ".vite", "manifest.json")
+    manifest_path = STATIC_DIR / ".vite" / "manifest.json"
 
     api_port = os.getenv("PORT", "8080")
     app_base_url = get_app_base_url(api_port)
