@@ -31,8 +31,6 @@ from app.config import Config
 from app.deps import Deps, create_deps
 from core.telemetry.logging import init_logging
 
-templates = Jinja2Templates(directory="templates")
-
 base_router = APIRouter()
 
 logger = logging.getLogger(__name__)
@@ -40,6 +38,8 @@ logger = logging.getLogger(__name__)
 ROOT_DIR = Path(__file__).parent.parent
 STATIC_DIR = ROOT_DIR / "static"
 NOTEBOOK_ID = os.getenv("NOTEBOOK_ID", "")
+
+templates = Jinja2Templates(directory=ROOT_DIR / "templates")
 
 
 @base_router.get("/health")
