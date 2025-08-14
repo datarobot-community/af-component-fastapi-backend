@@ -70,6 +70,10 @@ def get_manifest_assets(
     """
     Reads the Vite manifest and returns the JS and CSS files for the given entry.
     """
+    if not manifest_path.exists():
+        logger.info("No manifest file, assuming now JS or CSS files for the index pat")
+        return dict(js=[], css=[])
+
     with open(manifest_path, "r") as f:
         manifest = json.load(f)
 
