@@ -97,7 +97,7 @@ def create_app(
     Create the FastAPI app setup with all the middleware and routers.
     """
     if config is None:
-        config = Config.load()
+        config = Config()
 
     init_logging(level=config.log_level, format_type=config.log_format)
 
