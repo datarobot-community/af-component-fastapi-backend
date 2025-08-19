@@ -124,7 +124,7 @@ def create_app(
         session_cookie_name = config.session_cookie_name
     else:
         # Auto-generate based on base path to avoid conflicts between apps
-        api_port = os.getenv("PORT", "8080")
+        api_port = os.getenv("PORT", app.port)
         app_base_url = get_app_base_url(api_port)
         # Create a safe cookie name from the base path
         cookie_suffix = (
@@ -157,7 +157,7 @@ def create_app(
         """
         manifest_path = STATIC_DIR / ".vite" / "manifest.json"
 
-        api_port = os.getenv("PORT", "8080")
+        api_port = os.getenv("PORT", app.port)
         app_base_url = get_app_base_url(api_port)
 
         env_vars = {

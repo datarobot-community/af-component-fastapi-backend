@@ -20,4 +20,4 @@ if [[ $workers -lt 2 ]]; then
 fi
 
 echo "Starting App with ${workers} workers"
-uv run fastapi run --workers "$workers" --port 8080 --proxy-headers
+uv run uvicorn app.main:app --workers "$workers" --port 8080 --proxy-headers --timeout-keep-alive 300
