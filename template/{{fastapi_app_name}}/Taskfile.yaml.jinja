@@ -14,7 +14,7 @@ tasks:
     desc: "🔨 Run the development server"
     cmds:
       - echo "🔨 Starting development server"
-      - uv run fastapi dev
+      - uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
 
   lint:
     silent: true
