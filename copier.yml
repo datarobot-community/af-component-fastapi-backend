@@ -1,3 +1,7 @@
+---
+!include "libraries/af-library-common/copier.yml"
+---
+
 # questions
 fastapi_app_name:
   type: str
@@ -21,8 +25,6 @@ base_answers_file:
   type: str
   default: ".datarobot/answers/base.yml"
   help: "Path to the base component answers file"
-
-!include "libraries/af-library-common/copier.yml"
 
 # Grab the base component answers to re-use answers
 _external_data:
