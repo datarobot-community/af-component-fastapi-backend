@@ -9,6 +9,14 @@ fastapi_local_port:
   default: "8080"
   help: "The port to run this FastAPI Web App"
 
+subcomponents:
+  type: str
+  multiselect: True
+  choices:
+  - af-component-fastapi-backend-oauth
+  - af-component-fastapi-backend-persistence-sqlite  
+  # Oauth needs persistence, but we don't have a way to exprress this yet
+
 copyright_year:
   type: int
   default: 2025
