@@ -17,15 +17,12 @@ subcomponents:
   - af-component-fastapi-backend-persistence-sqlite  
   # Oauth needs persistence, but we don't have a way to exprress this yet
 
-copyright_year:
-  type: int
-  default: 2025
-  help: "The current year to register copyright properly in the license file"
-
 base_answers_file:
   type: str
   default: ".datarobot/answers/base.yml"
   help: "Path to the base component answers file"
+
+!include "libraries/af-library-common/copier.yml"
 
 # Grab the base component answers to re-use answers
 _external_data:
