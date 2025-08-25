@@ -1,7 +1,7 @@
-{% filter ruff(fail="markfailure") %}{# 
+{% filter ruff(on_failure="markfailure") %}{# 
 #}{% include "includes/common/copyright_header.jinja" %}
 
-{% filter ruff_check(fail="markfailure") %}{% filter subcomponent_include("deps/imports.jinja") %}
+{% filter ruff_fix(on_failure="markfailure", select="I") %}{% filter subcomponent_include("deps/imports.jinja", subcomponents) %}
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -34,17 +34,17 @@ async def create_deps(
         yield deps
         return
 
-    # startup routine
-{% filter subcomponent_include("deps/create_deps_prestartup.jinja", subcomponents, indent=4) %}{% endfilter %}
-{% filter subcomponent_include("deps/create_deps_poststartup.jinja", subcomponents, indent=4) %}{% endfilter %}    
-
+{% filter subcomponent_include("deps/create_deps_pre_startup.jinja", subcomponents, indent=4) %}
+# startup routine
+{% endfilter %}
+{% filter subcomponent_include("deps/create_deps_post_startup.jinja", subcomponents, indent=4) %}{% endfilter %}    
 
     yield Deps(
 {% filter subcomponent_include("deps/create_deps_deps_fields.jinja", subcomponents, indent=8) %}
         config=config,
 {% endfilter %}    )
 
-    # shutdown routine
-{% filter subcomponent_include("deps/create_deps_shutdown.jinja", subcomponents, indent=4) %}{% endfilter %}
-
+{% filter subcomponent_include("deps/create_deps_shutdown.jinja", subcomponents, indent=4) %}
+# shutdown routine
+{% endfilter %}
 {% endfilter %}
