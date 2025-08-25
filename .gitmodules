@@ -2,3 +2,7 @@
 	path = subcomponents/af-component-fastapi-backend-oauth
 	url = git@github.com:datarobot/af-component-fastapi-backend-oauth
 	branch = damon/oauth-refactor
+[submodule "subcomponents/af-component-fastapi-backend-persistence-sqlite"]
+	path = subcomponents/af-component-fastapi-backend-persistence-sqlite
+	url = git@github.com:datarobot/af-component-fastapi-backend-persistence-sqlite
+	branch = damon/oauth-refactor
