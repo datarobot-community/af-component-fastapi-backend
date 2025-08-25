@@ -25,13 +25,10 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Deps:
 {% filter sortlines %}{#
-#}    config: Config{#
-    #}{% for component in subcomponents %}{#
-        #}{% filter indent(width=4) %}{#
-            #}{% include (["includes", component, "deps", "fields.jinja"]|join("/")) %}{#
-        #}{% endfilter %}{#
-    #}{% endfor %}{#
-#}{% endfilter %}
+#}    config: Config
+{% filter indent(width=4) %}{% for component in subcomponents %}{#
+    #}{% include (["includes", component, "deps", "fields.jinja"]|join("/")) %}{#
+#}{% endfor %}{% endfilter %}
 
 {% for component in subcomponents %}{#
    #}{% include (["includes", component, "deps", "helpers.jinja"]|join("/")) %}{#
@@ -74,9 +71,9 @@ async def create_deps(
 
     # shutdown routine
     {% filter indent(width=4) %}
-    {% for component in subcomponents %}
-    {% include (["includes", component, "deps", "create_deps_shutdown.jinja"]|join("/")) %}
-    {% endfor %}
+{% for component in subcomponents %}
+{% include (["includes", component, "deps", "create_deps_shutdown.jinja"]|join("/")) %}
+{% endfor %}
     {% endfilter %}
 
 {% endfilter %}
