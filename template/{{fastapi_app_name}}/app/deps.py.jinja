@@ -1,13 +1,13 @@
-{% filter ruff(on_failure="markfailure") %}{# 
+{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
 #}{% include "includes/common/copyright_header.jinja" %}
 
-{% filter ruff_fix(on_failure="markfailure", select="I") %}{% filter subcomponent_include("deps/imports.jinja", subcomponents) %}
+{% filter subcomponent_include("deps/imports.jinja", subcomponents) %}
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncGenerator
 from app.config import Config
-{% endfilter %}{% endfilter %}
+{% endfilter %}
 
 logger = logging.getLogger(__name__)
 
@@ -47,4 +47,4 @@ async def create_deps(
 {% filter subcomponent_include("deps/create_deps_shutdown.jinja", subcomponents, indent=4) %}
 # shutdown routine
 {% endfilter %}
-{% endfilter %}
+{% endfilter %}{% endfilter %}
