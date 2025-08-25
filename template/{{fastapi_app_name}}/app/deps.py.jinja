@@ -1,34 +1,21 @@
-{% filter ruff %}{# 
+{% filter ruff(fail="markfailure") %}{# 
 #}{% include "includes/common/copyright_header.jinja" %}
 
+{% filter ruff_check(fail="markfailure") %}{% filter subcomponent_include("deps/imports.jinja") %}
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncGenerator
-{% for component in subcomponents %}{#
-   #}{% include (["includes", component, "deps", "stdlib_imports.jinja"]|join("/")) %}{#
-#}{% endfor %}
-
-
-
-{% for component in subcomponents %}{#
-   #}{% include (["includes", component, "deps", "datarobot_imports.jinja"]|join("/")) %}{#
-#}{% endfor %}
-
 from app.config import Config
-{% for component in subcomponents %}{#
-   #}{% include (["includes", component, "deps", "app_imports.jinja"]|join("/")) %}{#
-#}{% endfor %}
+{% endfilter %}{% endfilter %}
 
 logger = logging.getLogger(__name__)
 
 @dataclass
 class Deps:
-{% filter sortlines %}{#
-#}    config: Config
-{% filter indent(width=4) %}{% for component in subcomponents %}{#
-    #}{% include (["includes", component, "deps", "fields.jinja"]|join("/")) %}{#
-#}{% endfor %}{% endfilter %}
+{% filter sortlines %}{% filter subcomponent_include("deps/fields.jinja", subcomponents, indent=4) %}
+config: Config
+{% endfilter %}{% endfilter %}
 
 {% for component in subcomponents %}{#
    #}{% include (["includes", component, "deps", "helpers.jinja"]|join("/")) %}{#
@@ -48,32 +35,16 @@ async def create_deps(
         return
 
     # startup routine
-    {# Really rellying on ruff to make anything reasonable of the whitespace here#}
-    {% filter indent(width=4) %}
-{% for component in subcomponents %}
-{% include (["includes", component, "deps", "create_deps_pre_startup.jinja"]|join("/")) %}
-{% endfor %}
-    {% endfilter %}
+{% filter subcomponent_include("deps/create_deps_prestartup.jinja", subcomponents, indent=4) %}{% endfilter %}
+{% filter subcomponent_include("deps/create_deps_poststartup.jinja", subcomponents, indent=4) %}{% endfilter %}    
 
-    
-    {% filter indent(width=4) %}
-{% for component in subcomponents %}
-{% include (["includes", component, "deps", "create_deps_post_startup.jinja"]|join("/")) %}
-{% endfor %}
-    {% endfilter %}
 
     yield Deps(
+{% filter subcomponent_include("deps/create_deps_deps_fields.jinja", subcomponents, indent=8) %}
         config=config,
-        {% for component in subcomponents %}
-        {% include (["includes", component, "deps", "create_deps_deps_fields.jinja"]|join("/")) %}
-        {% endfor %}
-    )
+{% endfilter %}    )
 
     # shutdown routine
-    {% filter indent(width=4) %}
-{% for component in subcomponents %}
-{% include (["includes", component, "deps", "create_deps_shutdown.jinja"]|join("/")) %}
-{% endfor %}
-    {% endfilter %}
+{% filter subcomponent_include("deps/create_deps_shutdown.jinja", subcomponents, indent=4) %}{% endfilter %}
 
 {% endfilter %}
