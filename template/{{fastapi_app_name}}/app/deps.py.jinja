@@ -1,7 +1,7 @@
 {% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
 #}{% include "includes/common/copyright_header.jinja" %}
 
-{% filter subcomponent_include("deps/imports.jinja", subcomponents) %}
+{% filter subcomponent_include("deps/imports.jinja") %}
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -13,13 +13,11 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Deps:
-{% filter sortlines %}{% filter subcomponent_include("deps/fields.jinja", subcomponents, indent=4) %}
+{% filter sortlines %}{% filter subcomponent_include("deps/fields.jinja", indent=4) %}
 config: Config
 {% endfilter %}{% endfilter %}
 
-{% for component in subcomponents %}{#
-   #}{% include (["includes", component, "deps", "helpers.jinja"]|join("/")) %}{#
-#}{% endfor %}
+{% filter subcomponent_include("deps/helpers.jinja") %}{%endfilter%}
 
 @asynccontextmanager
 async def create_deps(
@@ -34,17 +32,17 @@ async def create_deps(
         yield deps
         return
 
-{% filter subcomponent_include("deps/create_deps_pre_startup.jinja", subcomponents, indent=4) %}
+{% filter subcomponent_include("deps/create_deps_pre_startup.jinja", indent=4) %}
 # startup routine
 {% endfilter %}
 {% filter subcomponent_include("deps/create_deps_post_startup.jinja", subcomponents, indent=4) %}{% endfilter %}    
 
     yield Deps(
-{% filter subcomponent_include("deps/create_deps_deps_fields.jinja", subcomponents, indent=8) %}
+{% filter subcomponent_include("deps/create_deps_deps_fields.jinja", indent=8) %}
         config=config,
 {% endfilter %}    )
 
-{% filter subcomponent_include("deps/create_deps_shutdown.jinja", subcomponents, indent=4) %}
+{% filter subcomponent_include("deps/create_deps_shutdown.jinja", indent=4) %}
 # shutdown routine
 {% endfilter %}
 {% endfilter %}{% endfilter %}
