@@ -4,6 +4,10 @@
 
 - FastAPI
 
+## API
+
+- OpenAPI: http://localhost:8080/docs
+- Redoc: http://localhost:8080/redoc
 
 ## Development
 
@@ -72,3 +76,5 @@ With the fastapi running now accessing:
 http://localhost:9999/{{ fastapi_app_name }}
 
 will take you to a proxy compatible installation
+
+{% filter nest_markdown %}{% filter subcomponent_include("readme/readme.jinja", lines_between = 2) %}{% endfilter %}{% endfilter %}

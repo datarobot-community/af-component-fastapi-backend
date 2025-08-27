@@ -84,7 +84,7 @@ def get_manifest_assets(
 
 
 def create_app(
-    title: str = "DataRobot Application",
+    title: str = "{{_external_data.base.template_name}}",
     config: Config | None = None,
     deps: Deps | None = None,
 ) -> FastAPI:
@@ -154,6 +154,7 @@ def create_app(
         env_vars = {
             "BASE_PATH": app_base_url,
             "API_PORT": api_port,
+            "DATAROBOT_ENDPOINT": os.getenv("DATAROBOT_ENDPOINT", ""),
         }
 
         manifest_assets = get_manifest_assets(
