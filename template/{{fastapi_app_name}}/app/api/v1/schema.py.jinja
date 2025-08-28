@@ -1,0 +1,23 @@
+{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
+#}{% include "includes/common/copyright_header.jinja" %}
+
+from enum import Enum
+
+from pydantic import BaseModel
+
+
+class ErrorCodes(str, Enum):
+{% filter subcomponent_include("api/v1/error_codes.jinja", indent=4)%}
+UNKNOWN_ERROR = "unknown_error"
+{%endfilter%}
+
+
+class ErrorSchema(BaseModel):
+    """
+    A generic error response schema
+    """
+
+    code: str
+    message: str
+
+{%endfilter%}{%endfilter%}
