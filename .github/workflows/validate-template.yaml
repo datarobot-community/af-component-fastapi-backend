@@ -35,11 +35,12 @@ jobs:
           uv tool install ruff
           uv tool install isort
 
+      # The rm git here is because copier tries to 
       - name: Generate Test Project
         run: |
           rm -rf .git/
           rm .gitmodules
-          copier copy -f . mytemplate
+          copier copy . mytemplate --default --trust
 
       - name: Install go
         uses: actions/setup-go@v5
