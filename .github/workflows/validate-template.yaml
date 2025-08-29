@@ -44,6 +44,8 @@ jobs:
           copier copy . mytemplate --defaults --trust
         env:
           GIT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_ACTOR: ${{ GITHUB_ACTOR }}
+          GITHUB_ACTOR_ID: ${{ GITHUB_ACTOR_ID }}
 
       - name: Install go
         uses: actions/setup-go@v5
