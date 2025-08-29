@@ -35,17 +35,11 @@ jobs:
           uv tool install ruff
           uv tool install isort
 
-      # Unfortunately, this is needed because copier insists on cloning to get up to date
-      - name: Set git credentials
-        run: |
-          /usr/bin/git config --global credential.helper '!f() { test "$1" = get && echo "password=${{ secrets.PAT_TOKEN }}"}'
-
       - name: Generate Test Project
         run: |
+          rm -rf .git/
+          rm .gitmodules
           copier copy . mytemplate --defaults --trust
-        env:
-          GIT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
 
       - name: Install go
         uses: actions/setup-go@v5
