@@ -20,6 +20,7 @@ subcomponents:
   - af-component-fastapi-backend-oauth
   - af-component-fastapi-backend-persistence-sqlite  
   # Oauth needs persistence, but we don't have a way to exprress this yet
+  default: '[af-component-fastapi-backend-oauth, af-component-backend-persistence-sqlite]'
 
 base_answers_file:
   type: str

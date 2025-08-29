@@ -32,10 +32,12 @@ jobs:
       - name: Install Copier
         run: |
           uv tool install copier
+          uv tool install ruff
+          uv tool install isort
 
       - name: Generate Test Project
         run: |
-          copier copy . mytemplate --defaults
+          copier copy --vcs-ref HEAD . mytemplate --defaults --trust
 
       - name: Install go
         uses: actions/setup-go@v5
