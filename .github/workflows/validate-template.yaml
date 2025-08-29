@@ -35,17 +35,19 @@ jobs:
           uv tool install ruff
           uv tool install isort
 
+      - name: Install go
+        uses: actions/setup-go@v5
+      
+      # Put this before copier as our template runs yamlfmt
+      - name: Install yamlfmt
+        run: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
+
       # The rm git here is because copier tries to 
       - name: Generate Test Project
         run: |
           rm -rf .git/
           rm .gitmodules
           copier copy . mytemplate --defaults --trust
-
-      - name: Install go
-        uses: actions/setup-go@v5
-      - name: Install yamlfmt
-        run: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
 
       - name: Run yamlfmt
         run: yamlfmt -conf .yamlfmt.yaml -lint ./mytemplate
