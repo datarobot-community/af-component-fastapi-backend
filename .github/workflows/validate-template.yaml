@@ -36,11 +36,9 @@ jobs:
           uv tool install isort
 
       # Unfortunately, this is needed because copier insists on cloning to get up to date
-      - name: Set github url and credentials
+      - name: Set git credentials
         run: |
-          /usr/bin/git config --global --add url."https://${{ secrets.PAT_TOKEN }}:x-oauth-basic@github".insteadOf ssh://git@github
-          /usr/bin/git config --global --add url."https://${{ secrets.PAT_TOKEN }}:x-oauth-basic@github".insteadOf https://github
-          /usr/bin/git config --global --add url."${{ secrets.PAT_TOKEN }}@github".insteadOf git@github
+          /usr/bin/git config --global credential.helper '!f() { test "$1" = get && echo "password=${{ secrets.PAT_TOKEN }}"}'
 
       - name: Generate Test Project
         run: |
