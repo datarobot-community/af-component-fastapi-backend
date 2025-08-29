@@ -5,6 +5,6 @@ formatter:
   include_document_start: true
   retain_line_breaks: true
   max_line_length: 120
-  indentless_arrays: true
 exclude:
   - mytemplate/.datarobot/answers/base.yml
+  - mytemplate/.datarobot/answers/fastapi-web.yml
