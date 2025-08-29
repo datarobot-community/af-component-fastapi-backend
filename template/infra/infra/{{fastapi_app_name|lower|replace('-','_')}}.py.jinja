@@ -12,7 +12,7 @@ from datarobot_pulumi_utils.schema.apps import ApplicationSourceArgs
 from datarobot_pulumi_utils.schema.apps import CustomAppResourceBundles
 from datarobot_pulumi_utils.schema.exec_envs import RuntimeEnvironments
 from datarobot_pulumi_utils.pulumi.stack import PROJECT_NAME
-{% filter subcomponent_include("infra/fastapi/imports.jinja") %}
+{% filter subcomponent_include("infra/fastapi/imports.jinja") %}{% endfilter %}
 
 from . import project_dir, use_case
 
