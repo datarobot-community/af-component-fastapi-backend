@@ -1,5 +1,5 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
+{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}
 
 {% filter subcomponent_include("config/imports.jinja") %}
 from core.config import DataRobotAppFrameworkBaseSettings

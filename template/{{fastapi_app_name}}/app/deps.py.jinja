@@ -1,3 +1,4 @@
+{% include "includes/common/copyright_header.jinja" %}
 {% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}
 
 {% filter subcomponent_include("deps/imports.jinja") %}
