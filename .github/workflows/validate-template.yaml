@@ -37,7 +37,7 @@ jobs:
 
       - name: Generate Test Project
         run: |
-          git config credential.helper '!f() { echo username=${GITHUB_ACTOR}; echo "password=$GIT_TOKEN"; };f()'
+          git config --global credential.helper '!f() { echo "username=$GITHUB_ACTOR"; echo "password=$GIT_TOKEN"; };f()'
           copier copy . mytemplate --defaults --trust
         env:
           GIT_TOKEN: ${{ secrets.PAT_TOKEN }}
