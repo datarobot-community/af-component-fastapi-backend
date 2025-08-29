@@ -31,7 +31,7 @@ jobs:
 
       - name: Install Copier
         run: |
-          uv tool install copier
+          uv tool install --with copier_template_extensions copier
           uv tool install ruff
           uv tool install isort
 
@@ -39,7 +39,7 @@ jobs:
         run: |
           rm -rf .git/
           rm .gitmodules
-          copier copy . mytemplate --defaults --trust
+          copier copy -f . mytemplate
 
       - name: Install go
         uses: actions/setup-go@v5
