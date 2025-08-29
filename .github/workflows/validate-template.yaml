@@ -37,7 +37,13 @@ jobs:
 
       - name: Generate Test Project
         run: |
-          copier copy --vcs-ref HEAD . mytemplate --defaults --trust
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git config credential.helper \
+        	  '!f() { echo username=${GITHUB_ACTOR}; echo "password=$GIT_TOKEN"; };f
+          copier copy . mytemplate --defaults --trust
+        env:
+          GIT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Install go
         uses: actions/setup-go@v5
