@@ -18,6 +18,7 @@ dependencies = [
 "greenlet>=3.2.1",
 "pydantic-settings>=2.9.1",
 "aiohttp>=3.9.0",
+"ruff>=0.3.0",
 {% endfilter %}{% endfilter %}
 ]
 
@@ -26,7 +27,6 @@ dev = [
 {% filter sortlines %}{% filter subcomponent_include("pyproject/optional_dev_dependencies.jinja", indent=4) %}{#
 #}"pytest-cov>=6.1.1",
 "pytest>=7.4.0",
-"ruff>=0.3.0",
 "mypy>=1.8.0",
 "pytest-asyncio>=1.0.0",
 "pytest-datadir>=1.6.1",

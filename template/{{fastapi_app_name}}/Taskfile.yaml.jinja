@@ -1,3 +1,4 @@
+{% filter merge_yaml %}{% filter subcomponent_include("fastapi/taskfile.jinja") %}
 ---
 # https://taskfile.dev
 version: '3'
@@ -55,3 +56,4 @@ tasks:
       - echo "📜 Checking license headers"
       - docker run  --rm -v $PWD:/github/workspace ghcr.io/apache/skywalking-eyes/license-eye:eb0e0b091ea41213f712f622797e37526ca1e5d6
         -v info -c .licenserc.yaml header check
+{% endfilter %}{% endfilter %}
