@@ -40,7 +40,7 @@ jobs:
         run: |
           /usr/bin/git config --global --add url."https://${{ secrets.PAT_TOKEN }}:x-oauth-basic@github".insteadOf ssh://git@github
           /usr/bin/git config --global --add url."https://${{ secrets.PAT_TOKEN }}:x-oauth-basic@github".insteadOf https://github
-          /usr/bin/git config --global --add url."https://${{ secrets.PAT_TOKEN }}:x-oauth-basic@github".insteadOf git@github
+          /usr/bin/git config --global --add url."${{ secrets.PAT_TOKEN }}@github".insteadOf git@github
 
       - name: Generate Test Project
         run: |
