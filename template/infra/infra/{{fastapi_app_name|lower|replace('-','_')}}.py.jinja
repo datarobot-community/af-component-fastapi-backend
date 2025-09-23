@@ -30,7 +30,7 @@ SESSION_SECRET_KEY: Final[str] = "SESSION_SECRET_KEY"
 session_secret_key = os.environ.get(SESSION_SECRET_KEY)
 
 EXCLUDE_PATTERNS = [
-    re.compile(pattern)
+    re.compile(pattern.replace("/", re.escape(os.path.sep)))
     for pattern in [
         r".*tests/.*",
         r".*\.coverage",
