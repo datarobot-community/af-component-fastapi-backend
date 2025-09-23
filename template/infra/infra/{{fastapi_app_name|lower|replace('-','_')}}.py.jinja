@@ -30,7 +30,7 @@ SESSION_SECRET_KEY: Final[str] = "SESSION_SECRET_KEY"
 session_secret_key = os.environ.get(SESSION_SECRET_KEY)
 
 EXCLUDE_PATTERNS = [
-    re.compile(pattern.replace("/", re.escape(os.path.sep)))
+    re.compile(pattern)
     for pattern in [
         r".*tests/.*",
         r".*\.coverage",
@@ -103,6 +103,8 @@ def get_{{fastapi_app_name}}_app_files(
                 continue
             file_path = os.path.join(dirpath, filename)
             rel_path = os.path.relpath(file_path, {{fastapi_app_name}}_application_path)
+            # Convert to forward slashes for Linux destination
+            rel_path = rel_path.replace(os.path.sep, "/")
             source_files.append((os.path.abspath(file_path), rel_path))
     # Add the metadata.yaml file
     source_files.append(
