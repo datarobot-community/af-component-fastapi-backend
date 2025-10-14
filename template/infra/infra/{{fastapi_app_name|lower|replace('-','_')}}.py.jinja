@@ -145,7 +145,7 @@ def get_{{fastapi_app_name}}_app_files(
 ) -> list[tuple[str, str]]:
     _prep_metadata_yaml(runtime_parameter_values)
     # Get all files from application path, following symlinks
-    # When we've upgraded to Python 3.13 we can use Path.glob(recurse_symlinks=True)
+    # When we've upgraded to Python 3.13 we can use Path.glob(reduce_symlinks=True)
     # https://docs.python.org/3.13/library/pathlib.html#pathlib.Path.glob
     source_files = []
     for dirpath, dirnames, filenames in os.walk({{fastapi_app_name}}_application_path, followlinks=True):
