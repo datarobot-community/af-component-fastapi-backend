@@ -99,7 +99,7 @@ def fetch_and_prepare_app_resources(source_id: str) -> Optional[dict[str, Any]]:
 
 def create_resources_args(
     source_id: str,
-) -> Optional[pulumi_datarobot.CustomApplicationResourcesArgs]:
+) -> pulumi_datarobot.CustomApplicationResourcesArgs | dict[str, Any]:
     """
     Fetch resources from source and convert to Pulumi CustomApplicationResourcesArgs.
 
@@ -107,12 +107,12 @@ def create_resources_args(
         source_id: The ID of the CustomApplicationSource
 
     Returns:
-        CustomApplicationResourcesArgs if resources exist, None otherwise
+        CustomApplicationResourcesArgs if resources exist, empty dict otherwise
     """
     resources = fetch_and_prepare_app_resources(source_id)
     if resources:
         return pulumi_datarobot.CustomApplicationResourcesArgs(**resources)
-    return None
+    return {}
 
 
 def _prep_metadata_yaml(
