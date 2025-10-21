@@ -90,4 +90,4 @@ jobs:
           task lint-check
 
       - name: Run yamlfmt
-        run: yamlfmt -conf ./fastapi/.yamlfmt.yaml -lint ./mytemplate -gitignore_exclude -gitignore_path ./mytemplate/.gitignore
+        run: yamlfmt -conf fastapi/.yamlfmt.yaml -gitignore_exclude -gitignore_path mytemplate/.gitignore -lint mytemplate
