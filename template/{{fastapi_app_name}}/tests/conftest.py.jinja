@@ -39,8 +39,6 @@ def deps(config: Config) -> Deps:
     Dependency function to provide the necessary dependencies for the FastAPI app.
     Most of the dependencies are mocked to avoid unnecessary complexity in some tests.
     """
-    upload_dir = Path(tempfile.mkdtemp())
-
     return Deps(
 {% filter subcomponent_include("tests/fastapi/conftest/deps_fixture_fields.jinja", indent=8)%}
 config=config,
