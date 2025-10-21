@@ -82,7 +82,7 @@ jobs:
           copier copy base mytemplate --defaults --trust --data 'include_core=true'
           copier copy fastapi mytemplate --defaults --trust
           copier copy sqlite mytemplate --defaults --trust
-          copier oauth sqlite mytemplate --defaults --trust
+          copier copy oauth mytemplate --defaults --trust
       
       - name: Check lint
         run: |
