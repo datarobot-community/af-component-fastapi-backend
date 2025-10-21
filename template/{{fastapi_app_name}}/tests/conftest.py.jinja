@@ -40,7 +40,7 @@ def deps(config: Config) -> Deps:
     Most of the dependencies are mocked to avoid unnecessary complexity in some tests.
     """
     return Deps(
-{% filter subcomponent_include("tests/fastapi/conftest/deps_fixture_fields.jinja", indent=8)%}
+{% filter subcomponent_include("web/tests/conftest/deps_fixture_fields.jinja", indent=8)%}
 config=config,
 {% endfilter %}
     )
