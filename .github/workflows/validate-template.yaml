@@ -77,7 +77,7 @@ jobs:
       - name: Generate Test Project
         run: |
           rm -rf base/.git fastapi/.git sqlite/.git oauth/.git
-          rm base/.gitmodules fastapi/.gitmodules sqlite/.gitmodules oauth/.gitmodules
+          rm fastapi/.gitmodules sqlite/.gitmodules oauth/.gitmodules
           copier copy base mytemplate --defaults --trust
           copier copy fastapi mytemplate --defaults --trust
           copier copy sqlite mytemplate --defaults --trust
