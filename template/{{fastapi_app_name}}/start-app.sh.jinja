@@ -3,7 +3,7 @@
 # Configure environment
 export UV_CACHE_DIR=.uv
 
-{% filter subcomponent_include("web/start_app/run.jinja") %}
+{% filter subcomponent_include("web/start_app/run.jinja") %}{% endfilter %}
 
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8080 --proxy-headers --timeout-keep-alive 300
 
