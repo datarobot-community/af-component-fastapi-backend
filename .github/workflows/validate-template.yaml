@@ -29,6 +29,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install Task
+        uses: go-task/setup-task@v1
+
       - name: Install Copier
         run: |
           uv tool install --with copier_template_extensions copier
