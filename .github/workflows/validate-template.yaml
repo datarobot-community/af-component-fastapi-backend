@@ -18,11 +18,39 @@ jobs:
     name: Validate Template
 
     steps:
+      # We checkout all of the dependencies and subcomponents to test them together
       - name: Checkout Code
         uses: actions/checkout@v5
         with:
           submodules: recursive
           token: ${{ secrets.PAT_TOKEN }}
+          path: fastapi
+
+      - name: Checkout Base
+        uses: actions/checkout@v5
+        with:
+          repository: datarobot/af-component-base
+          token: ${{ secrets.PAT_TOKEN }}
+          path: base
+
+      - name: Checkout Sqlite
+        uses: actions/checkout@v5
+        with:
+          repository: datarobot/af-component-fastapi-backend-persistence-sqlite
+          token: ${{ secrets.PAT_TOKEN }}
+          submodules: recursive
+          path: sqlite
+          ref: damon/oauth-refactor  # TODO: Change this back when approved 
+
+      - name: Checkout Oauth
+        uses: actions/checkout@v5
+        with:
+          repository: datarobot/af-component-fastapi-backend-oauth
+          token: ${{ secrets.PAT_TOKEN }}
+          submodules: recursive
+          path: oauth
+          ref: damon/oauth-refactor # TODO: Remove before done
+  
 
       - name: Setup Python & uv
         uses: astral-sh/setup-uv@v5
@@ -45,12 +73,20 @@ jobs:
       - name: Install yamlfmt
         run: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
 
-      # The rm git here is because copier tries to 
+      # The rm git here is because copier tries and fails to pull submoduels otherwise
       - name: Generate Test Project
         run: |
-          rm -rf .git/
-          rm .gitmodules
-          copier copy . mytemplate --defaults --trust
+          rm -rf base/.git fastapi/.git sqlite/.git oauth/.git
+          rm base/.gitmodules fastapi/.gitmodules sqlite/.gitmodules oauth/.gitmodules
+          copier copy base mytemplate --defaults --trust
+          copier copy fastapi mytemplate --defaults --trust
+          copier copy sqlite mytemplate --defaults --trust
+          copier oauth sqlite mytemplate --defaults --trust
+      
+      - name: Check lint
+        run: |
+          cd mytemplate/web
+          task lint-check
 
       - name: Run yamlfmt
-        run: yamlfmt -conf .yamlfmt.yaml -lint ./mytemplate
+        run: yamlfmt -conf ../fastapi/.yamlfmt.yaml -lint ./mytemplate
