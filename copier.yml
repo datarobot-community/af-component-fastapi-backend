@@ -37,5 +37,5 @@ _preserve_symlinks: true
 
 _tasks:
   # || true as typechecking might not succeed untill all subcomponents are pulled
-  - working_directory: "{{ _copier_conf.dst_path }}/{{ fastapi_app_name }}"
+  - working_directory: "{{ fastapi_app_name }}"
     command: task install && (task lint || true)
