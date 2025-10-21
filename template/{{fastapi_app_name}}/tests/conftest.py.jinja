@@ -12,9 +12,9 @@ import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
-from {{fastapi_app_name}} import create_app
-from {{fastapi_app_name}}.config import Config
-from {{fastapi_app_name.deps}} import Deps, create_deps
+from app import create_app
+from app.config import Config
+from app.deps import Deps, create_deps
 {% filter subcomponent_include("web/tests/conftest/imports.jinja") %}{% endfilter %}
 
 
