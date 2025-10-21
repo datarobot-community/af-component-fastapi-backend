@@ -2,7 +2,8 @@
 {% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}
 
 {% filter subcomponent_include("config/imports.jinja") %}
-from core.config import DataRobotAppFrameworkBaseSettings
+from datarobot.core.config import DataRobotAppFrameworkBaseSettings
+
 from core.telemetry.logging import FormatType, LogLevel
 {% endfilter %}
 
