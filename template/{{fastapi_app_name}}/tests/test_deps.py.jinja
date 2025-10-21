@@ -1,9 +1,9 @@
 {% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
 #}{% include "includes/common/copyright_header.jinja" %}
 
-{% subcomponent_include("tests/fastapi/test_deps/imports.jinja") %}{% endfilter %}
+{% filter subcomponent_include("tests/fastapi/test_deps/imports.jinja") %}{% endfilter %}
 
 
-{% subcomponent_include("tests/fastapi/test_deps/tests.jinja") %}{% endfilter %}
+{% filter subcomponent_include("tests/fastapi/test_deps/tests.jinja") %}{% endfilter %}
 
-{% endfilter %}{% endfilter %}{% endfilter %}
+{% endfilter %}{% endfilter %}
