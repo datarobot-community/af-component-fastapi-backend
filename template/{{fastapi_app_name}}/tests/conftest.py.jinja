@@ -111,5 +111,5 @@ def clear_environment() -> Generator[None, None, None]:
     os.environ.clear()
     os.environ.update(original_env)
 
-{%filted subcomponent_include("tests/fastapi/conftest/deps_fixtures.jinja", lines_between=3)%}{%endfilter%}
+{%filter subcomponent_include("tests/fastapi/conftest/deps_fixtures.jinja", lines_between=3)%}{%endfilter%}
 {% endfilter %}{% endfilter %}
