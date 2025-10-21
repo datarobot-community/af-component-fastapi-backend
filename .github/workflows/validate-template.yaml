@@ -65,6 +65,7 @@ jobs:
           uv tool install --with copier_template_extensions copier
           uv tool install ruff
           uv tool install isort
+          uv tool install mypy
 
       - name: Install go
         uses: actions/setup-go@v5
