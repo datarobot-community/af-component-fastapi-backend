@@ -117,7 +117,7 @@ def create_app(
         session_cookie_name = config.session_cookie_name
     else:
         # Auto-generate based on base path to avoid conflicts between apps
-        cookie_path = get_app_base_url()
+        cookie_path = get_app_base_url(None)
         # Create a safe cookie name from the base path
         cookie_suffix = (
             cookie_path.strip("/").replace("/", "_").replace("-", "_") or "default"

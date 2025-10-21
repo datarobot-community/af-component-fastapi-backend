@@ -36,5 +36,6 @@ _answers_file: ".datarobot/answers/fastapi-{{ fastapi_app_name }}.yml"
 _preserve_symlinks: true
 
 _tasks:
+  # || true as typechecking might not succeed untill all subcomponents are pulled
   - working_directory: "{{ fastapi_app_name}}"
-    command: task install && task lint
+    command: task install && (task lint || true)
