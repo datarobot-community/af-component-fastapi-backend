@@ -1,0 +1,26 @@
+{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
+#}{% include "includes/common/copyright_header.jinja" %}
+
+import os
+from unittest.mock import patch
+
+from {{fastapi_app_name}} import Config
+
+
+def test__config__load_env_vars() -> None:
+    # mix of prefixed and unprefixed env vars
+    env_vars = dict(
+{% filter subcomponent_include("web/tests/test_config/env_vars.jinja", indent=8 )%}
+# The format of secrets in the DataRobot Custom App env
+MLOPS_RUNTIME_PARAM_SESSION_SECRET_KEY='{"type":"credential","payload":{"credentialType":"api_token","apiToken":"test-secret-key"}}',
+{% endfilter %}
+    )
+
+    with patch.dict(os.environ, env_vars, clear=True):
+        config = Config()
+
+{% filter subcomponent_include("web/tests/test_config/assertions.jinja", indent=8) %}
+assert config.session_secret_key == "test-secret-key"
+{% endfilter %}
+
+{% endfilter %}{% endfilter%}

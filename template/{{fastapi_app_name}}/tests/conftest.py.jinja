@@ -1,0 +1,115 @@
+{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
+#}{% include "includes/common/copyright_header.jinja" %}
+
+import os
+import tempfile
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from typing import AsyncGenerator, Awaitable, Callable, Generator, TypeVar
+from unittest.mock import AsyncMock
+
+import pytest
+from fastapi import FastAPI, Request
+from fastapi.testclient import TestClient
+
+from {{fastapi_app_name}} import create_app
+from {{fastapi_app_name}}.config import Config
+from {{fastapi_app_name.deps}} import Deps, create_deps
+{% filter subcomponent_include("app/tests/conftest/imports.jinja") %}{% endfilter %}
+
+
+async def migrate_tables_to_db(db: DBCtx) -> None:
+    async with db.engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+
+@pytest.fixture()
+def config() -> Config:
+    return Config(
+{% filter subcomponent_include("app/tests/conftest/config_fixture_fields.jinja", indent=8) %}
+session_secret_key="test-session-secret-key",
+session_https_only=False,
+{% endfilter %}
+    )
+
+
+@pytest.fixture
+def deps(config: Config) -> Deps:
+    """
+    Dependency function to provide the necessary dependencies for the FastAPI app.
+    Most of the dependencies are mocked to avoid unnecessary complexity in some tests.
+    """
+    upload_dir = Path(tempfile.mkdtemp())
+
+    return Deps(
+{% filter subcomponent_include("tests/fastapi/conftest/deps_fixture_fields.jinja", indent=8)%}
+config=config,
+{% endfilter %}
+    )
+
+
+@pytest.fixture
+def webapp(config: Config, deps: Deps) -> FastAPI:
+    """
+    Create a FastAPI app instance with the provided configuration.
+    """
+    app = create_app(config=config, deps=deps)
+    return app
+
+
+@pytest.fixture
+def client(webapp: FastAPI) -> Generator[TestClient, None, None]:
+    """
+    Create a test client for the FastAPI app.
+
+    Note: This client is not authenticated by default. For authenticated endpoints,
+    use the `authenticated_client` fixture instead.
+    """
+    with TestClient(webapp) as client:
+        yield client
+
+
+@pytest.fixture
+def simple_client(config: Config, deps: Deps) -> TestClient:
+    """
+    Create a simple test client for the FastAPI app without authentication.
+
+    Use this fixture for testing endpoints that don't require authentication.
+    For authenticated endpoints, use the `authenticated_client` fixture instead.
+    """
+    app = create_app(config=config, deps=deps)
+    # Explicitly set the state since lifespan may not work correctly in TestClient
+    app.state.deps = deps
+    return TestClient(app)
+
+T = TypeVar("T")
+
+
+def dep(value: T) -> Callable[[Request], Awaitable[T]]:
+    """
+    A convenient wrapper to turn a mocked value into a FastAPI.Deps() function
+    """
+
+    async def mock_deps(request: Request) -> T:
+        return value
+
+    return mock_deps
+
+
+@pytest.fixture(scope="session", autouse=True)
+def clear_environment() -> Generator[None, None, None]:
+    """Clear all environment variables at the start of the testing session."""
+    # Store original environment
+    original_env = dict(os.environ)
+
+    # Clear all environment variables
+    os.environ.clear()
+
+    yield
+
+    # Restore original environment after all tests complete
+    os.environ.clear()
+    os.environ.update(original_env)
+
+{%filted subcomponent_include("tests/fastapi/conftest/deps_fixtures.jinja", lines_between=3)%}{%endfilter%}
+{% endfilter %}{% endfilter %}
