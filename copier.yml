@@ -34,3 +34,7 @@ _external_data:
 _subdirectory: template
 _answers_file: ".datarobot/answers/fastapi-{{ fastapi_app_name }}.yml"
 _preserve_symlinks: true
+
+_tasks:
+  - working_directory: "{{ fastapi_app_name}}"
+    command: task lint
