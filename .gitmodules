@@ -10,3 +10,7 @@
 	path = libraries/af-library-common
 	url = git@github.com:datarobot/af-library-common
 	branch = damon/oauth-refactor
+[submodule "subcomponents/af-component-fastapi-backend-chat"]
+	path = subcomponents/af-component-fastapi-backend-chat
+	url = git@github.com:datarobot/af-component-fastapi-backend-chat
+	branch = damon/oauth-refactor
