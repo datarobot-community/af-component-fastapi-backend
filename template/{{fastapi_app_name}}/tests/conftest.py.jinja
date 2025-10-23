@@ -1,5 +1,4 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
 
 import os
 import tempfile
@@ -110,4 +109,3 @@ def clear_environment() -> Generator[None, None, None]:
     os.environ.update(original_env)
 
 {%filter subcomponent_include("web/tests/conftest/deps_fixtures.jinja", lines_between=3)%}{%endfilter%}
-{% endfilter %}{% endfilter %}

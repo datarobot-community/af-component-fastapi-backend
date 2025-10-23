@@ -1,5 +1,4 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
 import os
 import re
 import textwrap
@@ -229,4 +228,3 @@ pulumi.export(
     {{fastapi_app_name}}_app.application_url,
 )
 {% endfilter %}
-{% endfilter %}{% endfilter %}

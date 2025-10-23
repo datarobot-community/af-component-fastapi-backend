@@ -1,5 +1,5 @@
 {% include "includes/common/copyright_header.jinja" %}
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}
+
 
 {% filter subcomponent_include("config/imports.jinja") %}
 from datarobot.core.config import DataRobotAppFrameworkBaseSettings
@@ -20,5 +20,3 @@ session_cookie_name: str = "sess"  # Can be overridden for different apps
 log_level: LogLevel = LogLevel.INFO
 log_format: FormatType = "json"
 {% endfilter %}
-
-{% endfilter %}{% endfilter %}

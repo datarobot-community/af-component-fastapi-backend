@@ -1,5 +1,4 @@
 {% include "includes/common/copyright_header.jinja" %}
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}
 {% filter subcomponent_include("api/v1/imports.jinja") %}
 from fastapi import APIRouter
 {% endfilter %}
@@ -7,4 +6,3 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/v1")
 
 {% filter subcomponent_include("api/v1/include_router.jinja") %}{% endfilter %}
-{% endfilter %}{% endfilter %}

@@ -1,6 +1,4 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
 {% filter subcomponent_include("web/tests/test_deps/imports.jinja") %}{% endfilter %}
 
 {% filter subcomponent_include("web/tests/test_deps/tests.jinja") %}{% endfilter %}
-{% endfilter %}{% endfilter %}

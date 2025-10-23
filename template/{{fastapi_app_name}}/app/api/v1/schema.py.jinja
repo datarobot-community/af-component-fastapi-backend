@@ -1,5 +1,4 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
 
 from enum import Enum
 
@@ -19,5 +18,3 @@ class ErrorSchema(BaseModel):
 
     code: str
     message: str
-
-{%endfilter%}{%endfilter%}

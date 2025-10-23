@@ -1,5 +1,4 @@
-{% filter ruff(on_failure="mark_failure") %}{% filter isort(on_failure="mark_failure") %}{# 
-#}{% include "includes/common/copyright_header.jinja" %}
+{% include "includes/common/copyright_header.jinja" %}
 
 import os
 from unittest.mock import patch
@@ -22,5 +21,3 @@ MLOPS_RUNTIME_PARAM_SESSION_SECRET_KEY='{"type":"credential","payload":{"credent
 {% filter subcomponent_include("web/tests/test_config/assertions.jinja", indent=8) %}
 assert config.session_secret_key == "test-secret-key"
 {% endfilter %}
-
-{% endfilter %}{% endfilter%}
