@@ -229,6 +229,7 @@ custom_model_credential_runtime_parameters = [
     use_case_ids=[use_case.id],
     allow_auto_stopping=True,
     resources={{fastapi_app_name}}_app_source.id.apply(create_resources_args),
+    opts=pulumi.ResourceOptions(depends_on=[{{fastapi_app_name}}_app_source]),
 )
 
 pulumi.export({{fastapi_app_name}}_app_env_name, {{fastapi_app_name}}_app.id)
