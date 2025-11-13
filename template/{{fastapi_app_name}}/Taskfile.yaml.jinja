@@ -3,6 +3,21 @@
 version: '3'
 
 tasks:
+
+  auth-check:
+    silent: true
+    desc: "🔐 Check authentication prerequisites"
+    cmds:
+      - |
+        if command -v dr &> /dev/null; then
+          if dr auth help 2>&1 | grep -q "check"; then
+            echo "🔐 Checking authentication.."
+            dr auth check
+          else
+            echo "ℹ️  Skipping auth check (not supported)"
+          fi
+        fi
+
   install:
     desc: "🔧 Install dependencies"
     cmds:
@@ -12,6 +27,8 @@ tasks:
   dev:
     silent: true
     desc: "🔨 Run the development server"
+    deps:
+      - auth-check
     cmds:
       - echo "🔨 Starting development server"
       - uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
