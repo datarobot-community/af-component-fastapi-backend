@@ -30,6 +30,8 @@ from . import project_dir, use_case
 SESSION_SECRET_KEY: Final[str] = "SESSION_SECRET_KEY"
 session_secret_key = os.environ.get(SESSION_SECRET_KEY)
 
+required_key_scope_level: str = "{{ api_key_scope_level }}"
+
 EXCLUDE_PATTERNS = [
     re.compile(pattern)
     for pattern in [
@@ -220,6 +222,7 @@ custom_model_credential_runtime_parameters = [
     resources=pulumi_datarobot.ApplicationSourceResourcesArgs(
         resource_label=CustomAppResourceBundles.CPU_XL.value.id,
     ),
+    required_key_scope_level=required_key_scope_level,
     **{{fastapi_app_name}}_app_source_args,
 )
 
@@ -229,6 +232,7 @@ custom_model_credential_runtime_parameters = [
     use_case_ids=[use_case.id],
     allow_auto_stopping=True,
     resources={{fastapi_app_name}}_app_source.id.apply(create_resources_args),
+    required_key_scope_level=web_app_source.required_key_scope_level,
     opts=pulumi.ResourceOptions(depends_on=[{{fastapi_app_name}}_app_source]),
 )
 

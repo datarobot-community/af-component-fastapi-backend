@@ -19,6 +19,12 @@ base_answers_file:
   default: ".datarobot/answers/base.yml"
   help: "Path to the base component answers file"
 
+api_key_scope_level:
+  type: str
+  default: ""
+  help: "API key scope configuration. When disabled (empty), only the creator API key is available with full scope. When enabled, both user and creator API keys become available, but are limited to the specified scope. Options are 'viewer', 'user', or 'admin'."
+  validator: "{% if api_key_scope_level not in ['', 'viewer', 'user', 'admin'] %}Must be one of '', 'viewer', 'user', or 'admin'{% endif %}"
+
 # Grab the base component answers to re-use answers
 _external_data:
   base: "{{ base_answers_file }}"
