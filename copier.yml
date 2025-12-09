@@ -1,3 +1,7 @@
+---
+!include "libraries/af-library-common/copier.yml"
+---
+
 # questions
 fastapi_app_name:
   type: str
@@ -9,20 +13,67 @@ fastapi_local_port:
   default: "8080"
   help: "The port to run this FastAPI Web App"
 
-copyright_year:
-  type: int
-  default: 2025
-  help: "The current year to register copyright properly in the license file"
+subcomponents:
+  type: str
+  multiselect: True
+  choices:
+  - af-component-fastapi-backend-chat
+  - af-component-fastapi-backend-oauth
+  - af-component-fastapi-backend-persistence-sqlite
+  # Oauth needs persistence, but we don't have a way to exprress this yet
+  default: '[af-component-fastapi-backend-chat, af-component-fastapi-backend-oauth, af-component-fastapi-backend-persistence-sqlite]'
 
 base_answers_file:
   type: str
   default: ".datarobot/answers/base.yml"
   help: "Path to the base component answers file"
 
+agent_answers_file:
+  type: path
+  default: ".datarobot/answers/agent-agent.yml"
+  help: "Path to agent answers file"
+
+llm_answers_file:
+  type: path
+  default: ".datarobot/answers/llm-llm.yml"
+  help: "Path to the llm component answers file"
+
 # Grab the base component answers to re-use answers
 _external_data:
   base: "{{ base_answers_file }}"
+  agent: "{{ agent_answers_file }}"
+  llm: "{{ llm_answers_file }}"
+
+chat_target:
+  type: str
+  choices:
+    - agent
+    - llm
+  default: agent
+  help: "Who chats are aimed at: agent, custom model, or None."
+
+agent_app_name:
+  type: str
+  when: "{{ chat_target == 'agent' }}"
+  default: "{{ _external_data.agent.agent_app_name or 'agent' }}"
+  help: "The name/folder of agent deployment."
+
+llm_app_name:
+  type: str
+  when: "{{ chat_target == 'llm' }}"
+  default: "{{ _external_data.llm.llm_app_name or 'llm' }}"
+  help: "The name/folder of your LLM deployment."
+
+llm_app_model_name:
+  type: str
+  default: "{{ _external_data.llm.llm_app_model_name or 'azure-openai-gpt-4-o' }}"
+  help: "Model name for the LLM. Should be pulled from parent."
 
 _subdirectory: template
 _answers_file: ".datarobot/answers/fastapi-{{ fastapi_app_name }}.yml"
 _preserve_symlinks: true
+
+_tasks:
+  # || true as typechecking might not succeed untill all subcomponents are pulled
+  - working_directory: "{{ fastapi_app_name }}"
+    command: task install && (task lint || true)

@@ -1,0 +1,6 @@
+{% include "includes/common/copyright_header.jinja" %}
+import pytest
+
+{% filter subcomponent_include("web/tests/integration/conftest/imports.jinja") %}{% endfilter %}
+
+{% filter subcomponent_include("web/tests/integration/conftest/fixtures.jinja") %}{%endfilter%}

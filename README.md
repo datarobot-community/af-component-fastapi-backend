@@ -2,6 +2,11 @@
 
 The FastAPI Backned One-to-Many component from [App Framework Studio](https://github.com/datarobot/app-framework-studio)
 
+This Component has optional subcomponents that provide additional functionality.
+
+- [`af-component-fastapi-backend-oauth`](https://github.com/datarobot/af-component-fastapi-backend): provides DataRobot-powered OAuth endpoints.
+- [`af-component-fastapi-backend-persistence-sqlite`](https://github.com/datarobot/af-component-fastapi-backend): provides SQLite-based persistence.
+
 Covers the basic structure and answers needed to have a basic FastAPI
 app that is deployable as part of an App Template and can serve a
 React Frontend Component:

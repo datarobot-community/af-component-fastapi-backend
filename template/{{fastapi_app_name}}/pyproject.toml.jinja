@@ -6,24 +6,32 @@ description = "FastAPI Server"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "core",
-    "pydantic>=2.11.4",
-    "datarobot[auth-authlib,core]>=3.9.1",
-    "datarobot-asgi-middleware>=0.2.0",
-    "fastapi[standard]>=0.115.11",
-    "httpx>=0.28.1",
-    "python-dotenv>=1.0.1",
-    "uvicorn>=0.22.0",
-    "itsdangerous>=2.2.0",
+{% filter sortlines %}{% filter subcomponent_include("pyproject/dependencies.jinja", indent=4) %}
+"core",
+"pydantic>=2.11.4",
+"datarobot-asgi-middleware>=0.2.0",
+"fastapi[standard]>=0.115.11",
+"httpx>=0.28.1",
+"python-dotenv>=1.0.1",
+"uvicorn>=0.22.0",
+"itsdangerous>=2.2.0",
+"greenlet>=3.2.1",
+"pydantic-settings>=2.9.1",
+"aiohttp>=3.9.0",
+"ruff>=0.3.0",
+{% endfilter %}{% endfilter %}
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest-cov>=6.1.1",
-    "pytest>=7.4.0",
-    "ruff>=0.3.0",
-    "mypy>=1.8.0",
-    "pydantic>=2.6.1",
+{% filter sortlines %}{% filter subcomponent_include("pyproject/optional_dev_dependencies.jinja", indent=4) %}{#
+#}"pytest-cov>=6.1.1",
+"pytest>=7.4.0",
+"mypy>=1.8.0",
+"pytest-asyncio>=1.0.0",
+"pytest-datadir>=1.6.1",
+"respx>=0.22.0",{#
+#}{% endfilter %}{% endfilter %}
 ]
 
 [tool.uv.sources]
@@ -38,9 +46,11 @@ packages = ["app"]
 include = ["static", "templates"]
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
+addopts = "-p no:warnings"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -123,7 +133,9 @@ docstring-code-line-length = "dynamic"
 [tool.mypy]
 strict = true
 python_version = "3.11"
-plugins = "pydantic.mypy"
+plugins = [
+{%filter subcomponent_include("pyproject/tool.mypy.plugins.jinja", indent=4)%}"pydantic.mypy",{%endfilter%}
+]
 exclude = """(?x)(
     output/ # exclude files starting with "output"
     | deployment_.*/
