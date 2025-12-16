@@ -14,16 +14,23 @@ copyright_year:
   default: 2025
   help: "The current year to register copyright properly in the license file"
 
+api_key_scope_level:
+  type: str
+  default: ""
+  help: |
+    API key scope configuration. When disabled (empty), only the creator API key is available with full scope.
+    When enabled, both user and creator API keys become available, but are limited to the specified scope.
+  choices:
+    - ""
+    - viewer
+    - user
+    - admin
+
 base_answers_file:
   type: str
   default: ".datarobot/answers/base.yml"
   help: "Path to the base component answers file"
 
-api_key_scope_level:
-  type: str
-  default: ""
-  help: "API key scope configuration. When disabled (empty), only the creator API key is available with full scope. When enabled, both user and creator API keys become available, but are limited to the specified scope. Options are 'viewer', 'user', or 'admin'."
-  validator: "{% if api_key_scope_level not in ['', 'viewer', 'user', 'admin'] %}Must be one of '', 'viewer', 'user', or 'admin'{% endif %}"
 
 # Grab the base component answers to re-use answers
 _external_data:
