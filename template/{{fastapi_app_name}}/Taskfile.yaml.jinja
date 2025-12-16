@@ -2,6 +2,10 @@
 # https://taskfile.dev
 version: '3'
 
+# In Notebooks, drop PYTHONPATH to avoid dependency collisions
+env:
+  CALCULATED_PYTHONPATH: "{% raw %}{{ if and .PYTHONPATH .NOTEBOOK_ID }}{{ else }}{{ .PYTHONPATH }}{{ end }}{% endraw %}"
+
 tasks:
 
   auth-check:
@@ -29,7 +33,7 @@ tasks:
       - auth-check
     cmds:
       - echo "🔨 Starting development server"
-      - uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
+      - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
 
   lint:
     silent: true
@@ -38,7 +42,7 @@ tasks:
       - echo "🧹 Running linters.."
       - uv run ruff format .
       - uv run ruff check . --fix
-      - uv run mypy --pretty .
+      - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run mypy --pretty .
 
   lint-check:
     silent: true
@@ -46,14 +50,14 @@ tasks:
     cmds:
       - uv run ruff format --check .
       - uv run ruff check .
-      - uv run mypy --pretty .
+      - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run mypy --pretty .
 
   test:
     silent: true
     desc: "🧪 Run tests"
     cmds:
       - echo "🧪 Running tests.."
-      - uv run pytest --cov --cov-report=html --cov-report=term --cov-report xml:.coverage.xml
+      - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run pytest --cov --cov-report=html --cov-report=term --cov-report xml:.coverage.xml
 
   copyright:
     aliases: [license]
