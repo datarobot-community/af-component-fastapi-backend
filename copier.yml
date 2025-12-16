@@ -9,11 +9,6 @@ fastapi_local_port:
   default: "8080"
   help: "The port to run this FastAPI Web App"
 
-copyright_year:
-  type: int
-  default: 2025
-  help: "The current year to register copyright properly in the license file"
-
 api_key_scope_level:
   type: str
   default: ""
