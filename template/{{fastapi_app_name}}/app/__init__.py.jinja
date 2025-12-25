@@ -93,7 +93,7 @@ def get_manifest_assets(
 
 
 def create_app(
-    title: str = "DataRobot Application",
+    title: str = "{{ _external_data.base.template_name }}",
     config: Config | None = None,
     deps: Deps | None = None,
 ) -> FastAPI:
