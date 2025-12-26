@@ -16,5 +16,10 @@ from core.telemetry.logging import FormatType, LogLevel
 
 
 class Config(DataRobotAppFrameworkBaseSettings):
+    session_secret_key: str
+    session_max_age: int = 14 * 24 * 60 * 60  # 14 days, in seconds
+    session_https_only: bool = True
+    session_cookie_name: str = "sess"  # Can be overridden for different apps
+
     log_level: LogLevel = LogLevel.INFO
     log_format: FormatType = "json"
