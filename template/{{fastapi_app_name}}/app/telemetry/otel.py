@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Telemetry module for DataRobot Custom Applications.
+Open Telemetry module for DataRobot Custom Applications.
 
 This module provides a reusable telemetry foundation that can be extended
 for specific Custom Applications while maintaining consistent datavolt patterns.
@@ -124,19 +124,19 @@ class OTLPConnectionErrorFilter(logging.Filter):
 
 class OTel:
     """
-    Telemetry manager for DataRobot Custom Applications.
+    Open Telemetry manager for DataRobot Custom Applications.
 
     Provides OpenTelemetry configuration following datavolt patterns.
     Implements singleton pattern to ensure only one instance exists per process.
     """
 
-    _instance: Optional[Telemetry] = None
+    _instance: Optional[OTel] = None
     _initialized: bool = False
     _auto_instrumentation_setup: bool = False
 
     def __new__(
         cls, entity_type: str = "custom_application", entity_id: Optional[str] = None
-    ) -> Telemetry:
+    ) -> OTel:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -245,9 +245,9 @@ class OTel:
             app: The FastAPI application instance to instrument
 
         Example:
-            telemetry = Telemetry()
+            otel = OTel()
             app = FastAPI()
-            telemetry.instrument_fastapi_app(app)
+            otel.instrument_fastapi_app(app)
         """
         if FastAPIInstrumentor is None:
             logging.getLogger(__name__).warning(
