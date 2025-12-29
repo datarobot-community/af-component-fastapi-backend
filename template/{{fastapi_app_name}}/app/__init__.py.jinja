@@ -28,7 +28,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import Config
 from app.deps import Deps, create_deps
-from telemetry import init_logging, otel
+from app.telemetry import init_logging, otel
 
 base_router = APIRouter()
 
