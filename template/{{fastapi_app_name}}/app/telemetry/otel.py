@@ -75,7 +75,7 @@ except ImportError:
 try:
     from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 except ImportError:
-    HTTPXClientInstrumentor = None  # type: ignore[assignment, misc]
+    HTTPXClientInstrumentor = None
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -216,7 +216,7 @@ class OTel:
         - httpx library (if installed)
         - FastAPI (must be called separately with instrument_fastapi_app)
         """
-        if RequestsInstrumentor:
+        if RequestsInstrumentor is not None:
             try:
                 RequestsInstrumentor().instrument()
                 logging.getLogger(__name__).info("Auto-instrumentation enabled for requests library")
@@ -228,7 +228,7 @@ class OTel:
                 "Install with: pip install opentelemetry-instrumentation-requests"
             )
 
-        if HTTPXClientInstrumentor:
+        if HTTPXClientInstrumentor is not None:
             try:
                 HTTPXClientInstrumentor().instrument()
                 logging.getLogger(__name__).info("Auto-instrumentation enabled for httpx library")
