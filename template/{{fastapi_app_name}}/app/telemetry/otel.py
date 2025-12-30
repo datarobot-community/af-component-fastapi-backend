@@ -494,7 +494,7 @@ class OTel:
             },
         )
 
-    def __enter__(self) -> Telemetry:
+    def __enter__(self) -> OTel:
         """Context manager entry."""
         return self
 
