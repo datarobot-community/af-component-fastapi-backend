@@ -182,5 +182,6 @@ def create_app(
             },
         )
 
+    otel.telemetry.log_application_start()
     otel.instrument_fastapi_app(app)
     return app
