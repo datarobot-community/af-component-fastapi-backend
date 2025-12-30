@@ -28,13 +28,13 @@ import os
 import time
 from contextlib import contextmanager
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncGenerator,
     Callable,
     Coroutine,
     Generator,
     Optional,
-    TYPE_CHECKING,
     no_type_check,
     overload,
 )
@@ -219,9 +219,13 @@ class OTel:
         if RequestsInstrumentor is not None:
             try:
                 RequestsInstrumentor().instrument()
-                logging.getLogger(__name__).info("Auto-instrumentation enabled for requests library")
+                logging.getLogger(__name__).info(
+                    "Auto-instrumentation enabled for requests library"
+                )
             except Exception as e:
-                logging.getLogger(__name__).warning(f"Failed to setup requests auto-instrumentation: {e}")
+                logging.getLogger(__name__).warning(
+                    f"Failed to setup requests auto-instrumentation: {e}"
+                )
         else:
             logging.getLogger(__name__).warning(
                 "RequestsInstrumentor not available. "
@@ -231,9 +235,13 @@ class OTel:
         if HTTPXClientInstrumentor is not None:
             try:
                 HTTPXClientInstrumentor().instrument()
-                logging.getLogger(__name__).info("Auto-instrumentation enabled for httpx library")
+                logging.getLogger(__name__).info(
+                    "Auto-instrumentation enabled for httpx library"
+                )
             except Exception as e:
-                logging.getLogger(__name__).warning(f"Failed to setup httpx auto-instrumentation: {e}")
+                logging.getLogger(__name__).warning(
+                    f"Failed to setup httpx auto-instrumentation: {e}"
+                )
 
     def instrument_fastapi_app(self, app: FastAPI) -> None:
         """
@@ -258,9 +266,13 @@ class OTel:
 
         try:
             FastAPIInstrumentor.instrument_app(app)
-            logging.getLogger(__name__).info("Auto-instrumentation enabled for FastAPI application")
+            logging.getLogger(__name__).info(
+                "Auto-instrumentation enabled for FastAPI application"
+            )
         except Exception as e:
-            logging.getLogger(__name__).warning(f"Failed to instrument FastAPI app: {e}")
+            logging.getLogger(__name__).warning(
+                f"Failed to instrument FastAPI app: {e}"
+            )
 
     def configure_logging(self) -> LoggerProvider:
         """

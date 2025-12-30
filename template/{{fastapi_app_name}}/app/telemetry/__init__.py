@@ -21,7 +21,7 @@ from .logging import (
     init_logging,
     log_api_call,
 )
-from .otel import otel, OTel
+from .otel import OTel, otel
 from .uvicorn_filter import configure_uvicorn_logging
 
 __all__ = [
