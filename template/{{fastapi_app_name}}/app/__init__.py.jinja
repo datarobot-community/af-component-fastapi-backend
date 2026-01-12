@@ -28,7 +28,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import Config
 from app.deps import Deps, create_deps
-from core.telemetry.logging import init_logging
+from app.telemetry import init_logging, otel
 
 base_router = APIRouter()
 
@@ -182,4 +182,6 @@ def create_app(
             },
         )
 
+    otel.log_application_start()
+    otel.instrument_fastapi_app(app)
     return app

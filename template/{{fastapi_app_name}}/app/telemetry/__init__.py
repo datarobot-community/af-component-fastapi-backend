@@ -11,15 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datarobot.core.config import DataRobotAppFrameworkBaseSettings
-from app.telemetry import FormatType, LogLevel
 
+from .logging import (
+    FormatType,
+    JsonFormatter,
+    LogLevel,
+    TextFormatter,
+    get_logger,
+    init_logging,
+    log_api_call,
+)
+from .otel import OTel, otel
+from .uvicorn_filter import configure_uvicorn_logging
 
-class Config(DataRobotAppFrameworkBaseSettings):
-    session_secret_key: str
-    session_max_age: int = 14 * 24 * 60 * 60  # 14 days, in seconds
-    session_https_only: bool = True
-    session_cookie_name: str = "sess"  # Can be overridden for different apps
-
-    log_level: LogLevel = LogLevel.INFO
-    log_format: FormatType = "json"
+__all__ = [
+    "LogLevel",
+    "FormatType",
+    "TextFormatter",
+    "JsonFormatter",
+    "OTel",
+    "init_logging",
+    "get_logger",
+    "log_api_call",
+    "otel",
+    "configure_uvicorn_logging",
+]
