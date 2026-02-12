@@ -28,7 +28,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import Config
 from app.deps import Deps, create_deps
-from app.telemetry import init_logging, otel
+from app.telemetry import init_logging, configure_uvicorn_logging, otel
 
 base_router = APIRouter()
 
@@ -104,6 +104,11 @@ def create_app(
         config = Config()
 
     init_logging(level=config.log_level, format_type=config.log_format)
+
+    # Configure uvicorn logging with health check filtering and custom formatting
+    configure_uvicorn_logging(
+        log_format=config.log_format, log_level=config.log_level.value
+    )
 
     logger.info("App is starting up.")
 
