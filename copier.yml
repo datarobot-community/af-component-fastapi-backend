@@ -4,6 +4,11 @@ fastapi_app_name:
   default: "web"
   help: "The name/folder of your FastAPI Web App. Required to use a python friendly name like web or api_backend"
 
+fastapi_app_name_file:
+  type: str
+  default: "{{fastapi_app_name|lower|replace('-','_')}}"
+  when: false
+
 fastapi_local_port:
   type: int
   default: "8080"
