@@ -239,18 +239,20 @@ def init_logging(
 
     # Create handler with appropriate formatter
     handler = logging.StreamHandler(stream)
+    formatter: Union[JsonFormatter, TextFormatter]
     if format_type == "json":
-        handler.setFormatter(JsonFormatter())
+        formatter = JsonFormatter()
     else:
-        text_formatter = TextFormatter(
+        formatter = TextFormatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
-        text_formatter.converter = time.gmtime
-        handler.setFormatter(text_formatter)
+        formatter.converter = time.gmtime
 
     # Wrap the formatter with RedactingFormatter
     redacting_formatter = RedactingFormatter(formatter)
     handler.setFormatter(redacting_formatter)
+
+    root_logger.addHandler(handler)
 
 
 def get_logger(
