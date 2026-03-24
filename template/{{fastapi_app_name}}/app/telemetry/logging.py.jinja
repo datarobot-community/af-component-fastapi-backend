@@ -248,7 +248,9 @@ def init_logging(
         text_formatter.converter = time.gmtime
         handler.setFormatter(text_formatter)
 
-    root_logger.addHandler(handler)
+    # Wrap the formatter with RedactingFormatter
+    redacting_formatter = RedactingFormatter(formatter)
+    handler.setFormatter(redacting_formatter)
 
 
 def get_logger(
