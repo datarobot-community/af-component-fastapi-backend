@@ -1,0 +1,6 @@
+module: af-component-fastapi-backend
+short_description: "The FastAPI Component. Deploys a DataRobot Custom Application with a FastAPI server"
+repeatable: true
+depends_on:
+  base:
+    url: https://github.com/datarobot-community/af-component-base
