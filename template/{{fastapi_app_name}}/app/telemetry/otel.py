@@ -75,7 +75,7 @@ except ImportError:
 try:
     from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 except ImportError:
-    HTTPXClientInstrumentor = None  # type: ignore[assignment]
+    HTTPXClientInstrumentor = None
 
 P = ParamSpec("P")
 T = TypeVar("T")
