@@ -1,0 +1,45 @@
+---
+name: af-component-fastapi-backend Framework
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  test-framework:
+    name: "Test Framework"
+    runs-on: "ubuntu-latest"
+    container:
+      image: ghcr.io/astral-sh/uv:python3.11-bookworm
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v5"
+      - name: Render template
+        uses: datarobot-oss/copier-template-validator@main
+        with:
+          working-directory: .
+          rendered-dir: ./rendered
+      - name: Install dependencies
+        shell: sh
+        working-directory: ./rendered/web
+        run: |
+          uvx --from go-task-bin task install
+        env:
+          UV_CACHE_DIR: /.uv_cache
+      - name: Run linter
+        shell: sh
+        working-directory: ./rendered/web
+        run: |
+          uvx --from go-task-bin task lint-check
+        env:
+          UV_CACHE_DIR: /.uv_cache
+      - name: Run tests
+        shell: sh
+        working-directory: ./rendered/web
+        run: |
+          uvx --from go-task-bin task test
+        env:
+          UV_CACHE_DIR: /.uv_cache
