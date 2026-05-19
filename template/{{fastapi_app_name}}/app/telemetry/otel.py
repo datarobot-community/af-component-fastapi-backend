@@ -179,8 +179,11 @@ class OTel:
         self.entity_type = entity_type
         self.entity_id = entity_id or os.environ.get("APPLICATION_ID")
 
-        # Telemetry enabled by default, disabled in local dev (start scripts set DISABLE_TELEMETRY=true)
-        self.telemetry_enabled = os.environ.get("DISABLE_TELEMETRY") != "true"
+        # Telemetry enabled by default; honour both our internal flag and the well-known OTel SDK var.
+        self.telemetry_enabled = (
+            os.environ.get("DISABLE_TELEMETRY") != "true"
+            and os.environ.get("OTEL_SDK_DISABLED", "").lower() not in ("true", "1")
+        )
 
         # Auto-disable telemetry if OTLP endpoint is not configured
         if self.telemetry_enabled and not os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT"):
