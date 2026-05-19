@@ -427,7 +427,7 @@ class OTel:
             # Create metric reader
             reader = PeriodicExportingMetricReader(
                 exporter=otlp_exporter,
-                export_interval_millis=30000,
+                export_interval_millis=5_000,
             )
 
             # Create meter provider
