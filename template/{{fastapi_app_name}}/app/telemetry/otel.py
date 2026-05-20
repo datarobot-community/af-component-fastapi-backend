@@ -41,6 +41,7 @@ from typing import (
 )
 
 from opentelemetry import context, metrics, trace
+from opentelemetry.trace import Span
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
@@ -673,7 +674,7 @@ class OTel:
         )
 
     @contextmanager
-    def span(self, name: str, **attributes: Any) -> Generator[trace.Span, None, None]:
+    def span(self, name: str, **attributes: Any) -> Generator[Span, None, None]:
         """Create a named span as a context manager, with optional initial attributes.
 
         Use this for ad-hoc spans within a function body where a decorator
