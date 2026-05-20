@@ -40,6 +40,7 @@ from typing import (
     overload,
 )
 
+from datarobot.core import DataRobotAppFrameworkBaseSettings
 from opentelemetry import context, metrics, trace
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
@@ -151,6 +152,17 @@ class OTLPConnectionErrorFilter(logging.Filter):
         return True
 
 
+class _OtelConfig(DataRobotAppFrameworkBaseSettings):
+    """OTel-specific settings read from env / .env / pulumi_config.json."""
+
+    otel_exporter_otlp_endpoint: str = ""
+    otel_exporter_otlp_headers: str = ""
+    otel_metric_export_interval_millis: int = 5_000
+    otel_service_priority: str = "p1"
+    disable_telemetry: bool = False
+    otel_sdk_disabled: bool = False
+
+
 class OTel:
     """
     Open Telemetry manager for DataRobot Custom Applications.
@@ -180,10 +192,7 @@ class OTel:
         self.entity_type = entity_type
         self.entity_id = entity_id or os.environ.get("APPLICATION_ID")
 
-        # Lazy import avoids a circular dependency (config.py → app.telemetry → otel.py → config.py).
-        from app.config import Config as _Config
-
-        _config = _Config()
+        _config = _OtelConfig()
         self._metric_export_interval_millis = _config.otel_metric_export_interval_millis
         self._service_priority = _config.otel_service_priority
 
