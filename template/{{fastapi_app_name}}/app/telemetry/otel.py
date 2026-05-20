@@ -187,7 +187,9 @@ class OTel:
         self._service_priority = _config.otel_service_priority
 
         # Telemetry enabled by default; honour both our internal flag and the well-known OTel SDK var.
-        self.telemetry_enabled = not _config.disable_telemetry and not _config.otel_sdk_disabled
+        self.telemetry_enabled = (
+            not _config.disable_telemetry and not _config.otel_sdk_disabled
+        )
 
         # Auto-disable telemetry if OTLP endpoint is not configured
         if self.telemetry_enabled and not _config.otel_exporter_otlp_endpoint:
@@ -201,8 +203,14 @@ class OTel:
         # Fail loudly if a remote endpoint is set but auth headers are missing — requests will be rejected.
         # Skip this check for localhost endpoints (local collectors don't require auth).
         _endpoint = _config.otel_exporter_otlp_endpoint
-        _is_remote = _endpoint and "localhost" not in _endpoint and "127.0.0.1" not in _endpoint
-        if self.telemetry_enabled and _is_remote and not _config.otel_exporter_otlp_headers:
+        _is_remote = (
+            _endpoint and "localhost" not in _endpoint and "127.0.0.1" not in _endpoint
+        )
+        if (
+            self.telemetry_enabled
+            and _is_remote
+            and not _config.otel_exporter_otlp_headers
+        ):
             self.telemetry_enabled = False
             logging.getLogger(__name__).error(
                 "OTEL_EXPORTER_OTLP_ENDPOINT is set to a remote URL but OTEL_EXPORTER_OTLP_HEADERS is missing. "
@@ -675,7 +683,9 @@ class OTel:
                 docs = retrieve(query_text)
                 span.set_attribute("doc_count", len(docs))
         """
-        with self.get_tracer("application-tracer").start_as_current_span(name) as active_span:
+        with self.get_tracer("application-tracer").start_as_current_span(
+            name
+        ) as active_span:
             for key, value in attributes.items():
                 active_span.set_attribute(key, value)
             yield active_span
