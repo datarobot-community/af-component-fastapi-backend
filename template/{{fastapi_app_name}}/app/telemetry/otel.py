@@ -179,16 +179,17 @@ class OTel:
         self.entity_type = entity_type
         self.entity_id = entity_id or os.environ.get("APPLICATION_ID")
 
+        # Lazy import avoids a circular dependency (config.py → app.telemetry → otel.py → config.py).
+        from app.config import Config as _Config
+
+        _config = _Config()
+        self._metric_export_interval_millis = _config.otel_metric_export_interval_millis
+
         # Telemetry enabled by default; honour both our internal flag and the well-known OTel SDK var.
-        self.telemetry_enabled = os.environ.get(
-            "DISABLE_TELEMETRY"
-        ) != "true" and os.environ.get("OTEL_SDK_DISABLED", "").lower() not in (
-            "true",
-            "1",
-        )
+        self.telemetry_enabled = not _config.disable_telemetry and not _config.otel_sdk_disabled
 
         # Auto-disable telemetry if OTLP endpoint is not configured
-        if self.telemetry_enabled and not os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT"):
+        if self.telemetry_enabled and not _config.otel_exporter_otlp_endpoint:
             # Check if internal endpoint is set (fallback)
             if not os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT_INTERNAL"):
                 self.telemetry_enabled = False
@@ -198,20 +199,14 @@ class OTel:
 
         # Fail loudly if a remote endpoint is set but auth headers are missing — requests will be rejected.
         # Skip this check for localhost endpoints (local collectors don't require auth).
-        _endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "")
-        _is_remote = (
-            _endpoint and "localhost" not in _endpoint and "127.0.0.1" not in _endpoint
-        )
-        if (
-            self.telemetry_enabled
-            and _is_remote
-            and not os.environ.get("OTEL_EXPORTER_OTLP_HEADERS")
-        ):
+        _endpoint = _config.otel_exporter_otlp_endpoint
+        _is_remote = _endpoint and "localhost" not in _endpoint and "127.0.0.1" not in _endpoint
+        if self.telemetry_enabled and _is_remote and not _config.otel_exporter_otlp_headers:
             self.telemetry_enabled = False
             logging.getLogger(__name__).error(
                 "OTEL_EXPORTER_OTLP_ENDPOINT is set to a remote URL but OTEL_EXPORTER_OTLP_HEADERS is missing. "
                 "All telemetry requests will be rejected (401). Disabling telemetry. "
-                "Run `task start` to get the required credentials, "
+                "Run `dr start` to get the required credentials, "
                 "then add OTEL_EXPORTER_OTLP_HEADERS to your .env file."
             )
 
@@ -427,7 +422,7 @@ class OTel:
             # Create metric reader
             reader = PeriodicExportingMetricReader(
                 exporter=otlp_exporter,
-                export_interval_millis=5_000,
+                export_interval_millis=self._metric_export_interval_millis,
             )
 
             # Create meter provider
