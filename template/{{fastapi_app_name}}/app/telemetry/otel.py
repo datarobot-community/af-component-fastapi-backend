@@ -40,7 +40,6 @@ from typing import (
     overload,
 )
 
-from pydantic import field_validator
 from datarobot.core import DataRobotAppFrameworkBaseSettings
 from opentelemetry import context, metrics, trace
 from opentelemetry._logs import set_logger_provider
@@ -58,6 +57,7 @@ from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.trace import Span
+from pydantic import field_validator
 from typing_extensions import ParamSpec, Self, TypeVar
 
 from app.telemetry.logging import RedactingFormatter
