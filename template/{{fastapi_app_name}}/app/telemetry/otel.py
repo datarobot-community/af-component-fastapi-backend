@@ -40,6 +40,7 @@ from typing import (
     overload,
 )
 
+from pydantic import field_validator
 from datarobot.core import DataRobotAppFrameworkBaseSettings
 from opentelemetry import context, metrics, trace
 from opentelemetry._logs import set_logger_provider
@@ -161,6 +162,11 @@ class _OtelConfig(DataRobotAppFrameworkBaseSettings):
     otel_service_priority: str = "p1"
     disable_telemetry: bool = False
     otel_sdk_disabled: bool = False
+
+    @field_validator("disable_telemetry", "otel_sdk_disabled", mode="before")
+    @classmethod
+    def _coerce_empty_string(cls, v: object) -> object:
+        return False if v == "" else v
 
 
 class OTel:
