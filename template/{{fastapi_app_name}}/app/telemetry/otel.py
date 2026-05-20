@@ -41,7 +41,6 @@ from typing import (
 )
 
 from opentelemetry import context, metrics, trace
-from opentelemetry.trace import Span
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
@@ -56,6 +55,7 @@ from opentelemetry.sdk.metrics.view import ExponentialBucketHistogramAggregation
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.trace import Span
 from typing_extensions import ParamSpec, Self, TypeVar
 
 from app.telemetry.logging import RedactingFormatter
