@@ -184,6 +184,7 @@ class OTel:
 
         _config = _Config()
         self._metric_export_interval_millis = _config.otel_metric_export_interval_millis
+        self._service_priority = _config.otel_service_priority
 
         # Telemetry enabled by default; honour both our internal flag and the well-known OTel SDK var.
         self.telemetry_enabled = not _config.disable_telemetry and not _config.otel_sdk_disabled
@@ -234,7 +235,7 @@ class OTel:
     def _get_resource(self) -> Resource:
         if self._resource is None:
             attrs: dict[str, str] = {
-                "datarobot.service.priority": "p1",
+                "datarobot.service.priority": self._service_priority,
             }
             # Only set service.name if the platform hasn't already provided OTEL_SERVICE_NAME.
             # Resource.create() merges env vars at lower precedence than explicit attrs, so
@@ -589,22 +590,39 @@ class OTel:
     @overload
     def trace(self: Self, func: Callable[P, T]) -> Callable[P, T]: ...
 
+    @overload
+    def trace(self: Self, name: str) -> Callable[[Any], Any]: ...
+
     @no_type_check
     def trace(self: Self, func: Any) -> Any:
         """
-        Wrap the execution of the decorated function in an OTEL span sharing the same name as the function.
+        Wrap the execution of the decorated function in an OTEL span.
+
+        Accepts an optional custom span name::
+
+            @otel.trace
+            async def my_handler(): ...
+
+            @otel.trace("custom-operation-name")
+            async def my_handler(): ...
+
         WARNING: There are sharp edges with this decorator if applied to functions that are reflected on.
         (I've seen this with methods in utils.rest_api.)
         """
-        tracer = self.get_tracer("application-tracer")
+        if isinstance(func, str):
+            return functools.partial(self._trace_with_name, span_name=func)
+        return self._trace_with_name(func)
 
-        span_name = f"{func.__module__}.{func.__qualname__}"
+    @no_type_check
+    def _trace_with_name(self: Self, func: Any, span_name: Optional[str] = None) -> Any:
+        tracer = self.get_tracer("application-tracer")
+        name = span_name or f"{func.__module__}.{func.__qualname__}"
 
         if inspect.iscoroutinefunction(func):
 
             @functools.wraps(func)
             async def async_inner(*args, **kwargs):
-                with tracer.start_as_current_span(span_name):
+                with tracer.start_as_current_span(name):
                     return await func(*args, **kwargs)
 
             return async_inner
@@ -612,7 +630,7 @@ class OTel:
 
             @functools.wraps(func)
             async def inner_asyncgen(*args, **kwargs):
-                with tracer.start_as_current_span(span_name):
+                with tracer.start_as_current_span(name):
                     async for x in func(*args, **kwargs):
                         yield x
 
@@ -621,7 +639,7 @@ class OTel:
 
             @functools.wraps(func)
             def inner_gen(*args, **kwargs):
-                with tracer.start_as_current_span(span_name):
+                with tracer.start_as_current_span(name):
                     for x in func(*args, **kwargs):
                         yield x
 
@@ -630,13 +648,13 @@ class OTel:
 
             @functools.wraps(func)
             def inner(*args, **kwargs):
-                with tracer.start_as_current_span(span_name):
+                with tracer.start_as_current_span(name):
                     return func(*args, **kwargs)
 
             return inner
         else:
             raise ValueError(
-                f"instrument can only decorate a function type, while {span_name} is a {type(func)}."
+                f"instrument can only decorate a function type, while {name} is a {type(func)}."
             )
 
     @functools.cache
@@ -645,6 +663,22 @@ class OTel:
         return meter.create_histogram(
             f"function.{name}", "s", "A histogram recording function timings."
         )
+
+    @contextmanager
+    def span(self, name: str, **attributes: Any) -> Generator[trace.Span, None, None]:
+        """Create a named span as a context manager, with optional initial attributes.
+
+        Use this for ad-hoc spans within a function body where a decorator
+        would be too coarse-grained::
+
+            with otel.span("retrieve-documents", query=query_text) as span:
+                docs = retrieve(query_text)
+                span.set_attribute("doc_count", len(docs))
+        """
+        with self.get_tracer("application-tracer").start_as_current_span(name) as active_span:
+            for key, value in attributes.items():
+                active_span.set_attribute(key, value)
+            yield active_span
 
     @contextmanager
     def time(self, name: str) -> Generator[None, None, None]:
