@@ -24,11 +24,3 @@ class Config(DataRobotAppFrameworkBaseSettings):
 
     log_level: LogLevel = LogLevel.INFO
     log_format: FormatType = "json"
-
-    # Telemetry / OTel settings — read from the corresponding env vars.
-    disable_telemetry: bool = False
-    otel_sdk_disabled: bool = False
-    otel_exporter_otlp_endpoint: str = ""
-    otel_exporter_otlp_headers: str = ""
-    otel_metric_export_interval_millis: int = 5_000
-    otel_service_priority: str = "p1"
