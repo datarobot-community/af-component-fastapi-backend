@@ -185,10 +185,7 @@ class OTel:
         self._metric_export_interval_millis = _config.otel_metric_export_interval_millis
         self._service_priority = _config.otel_service_priority
 
-        # Telemetry enabled by default; honour both our internal flag and the well-known OTel SDK var.
-        self.telemetry_enabled = (
-            not _config.disable_telemetry and not _config.otel_sdk_disabled
-        )
+        self.telemetry_enabled = not _config.otel_sdk_disabled
 
         # Auto-disable telemetry if OTLP endpoint is not configured
         if self.telemetry_enabled and not _config.otel_exporter_otlp_endpoint:

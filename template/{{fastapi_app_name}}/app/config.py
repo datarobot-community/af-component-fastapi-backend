@@ -34,10 +34,9 @@ class OtelSettings(DataRobotAppFrameworkBaseSettings):
     otel_exporter_otlp_headers: str = ""
     otel_metric_export_interval_millis: int = 5_000
     otel_service_priority: str = "p1"
-    disable_telemetry: bool = False
     otel_sdk_disabled: bool = False
 
-    @field_validator("disable_telemetry", "otel_sdk_disabled", mode="before")
+    @field_validator("otel_sdk_disabled", mode="before")
     @classmethod
     def _coerce_empty_string(cls, v: object) -> object:
         return False if v == "" else v
