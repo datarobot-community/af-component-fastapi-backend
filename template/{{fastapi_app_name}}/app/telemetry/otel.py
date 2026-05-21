@@ -40,7 +40,6 @@ from typing import (
     overload,
 )
 
-from datarobot.core import DataRobotAppFrameworkBaseSettings
 from opentelemetry import context, metrics, trace
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
@@ -57,9 +56,9 @@ from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.trace import Span
-from pydantic import field_validator
 from typing_extensions import ParamSpec, Self, TypeVar
 
+from app.config import OtelSettings
 from app.telemetry.logging import RedactingFormatter
 
 if TYPE_CHECKING:
@@ -153,22 +152,6 @@ class OTLPConnectionErrorFilter(logging.Filter):
         return True
 
 
-class _OtelConfig(DataRobotAppFrameworkBaseSettings):
-    """OTel-specific settings read from env / .env / pulumi_config.json."""
-
-    otel_exporter_otlp_endpoint: str = ""
-    otel_exporter_otlp_headers: str = ""
-    otel_metric_export_interval_millis: int = 5_000
-    otel_service_priority: str = "p1"
-    disable_telemetry: bool = False
-    otel_sdk_disabled: bool = False
-
-    @field_validator("disable_telemetry", "otel_sdk_disabled", mode="before")
-    @classmethod
-    def _coerce_empty_string(cls, v: object) -> object:
-        return False if v == "" else v
-
-
 class OTel:
     """
     Open Telemetry manager for DataRobot Custom Applications.
@@ -198,7 +181,7 @@ class OTel:
         self.entity_type = entity_type
         self.entity_id = entity_id or os.environ.get("APPLICATION_ID")
 
-        _config = _OtelConfig()
+        _config = OtelSettings()
         self._metric_export_interval_millis = _config.otel_metric_export_interval_millis
         self._service_priority = _config.otel_service_priority
 

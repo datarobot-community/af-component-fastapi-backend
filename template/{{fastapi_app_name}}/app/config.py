@@ -11,9 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datarobot.core.config import DataRobotAppFrameworkBaseSettings
+from enum import Enum
+from typing import Literal
 
-from app.telemetry.logging import FormatType, LogLevel
+from datarobot.core.config import DataRobotAppFrameworkBaseSettings
+from pydantic import field_validator
+
+
+class LogLevel(str, Enum):
+    ERROR = "ERROR"
+    WARN = "WARNING"
+    WARNING = "WARNING"
+    INFO = "INFO"
+    DEBUG = "DEBUG"
+
+
+FormatType = Literal["json", "text"]
+
+
+class OtelSettings(DataRobotAppFrameworkBaseSettings):
+    otel_exporter_otlp_endpoint: str = ""
+    otel_exporter_otlp_headers: str = ""
+    otel_metric_export_interval_millis: int = 5_000
+    otel_service_priority: str = "p1"
+    disable_telemetry: bool = False
+    otel_sdk_disabled: bool = False
+
+    @field_validator("disable_telemetry", "otel_sdk_disabled", mode="before")
+    @classmethod
+    def _coerce_empty_string(cls, v: object) -> object:
+        return False if v == "" else v
 
 
 class Config(DataRobotAppFrameworkBaseSettings):
