@@ -162,6 +162,7 @@ class OTel:
     """
 
     _SERVICE_PRIORITY = "p1"
+    _METRIC_EXPORT_INTERVAL_MILLIS = 5_000
 
     _instance: Optional[OTel] = None
     _initialized: bool = False
@@ -183,7 +184,6 @@ class OTel:
         self.entity_type = entity_type
         self.entity_id = entity_id or os.environ.get("APPLICATION_ID")
 
-        self._metric_export_interval_millis = 5_000
         self.telemetry_enabled = False
 
         self._logger_provider: Optional[LoggerProvider] = None
@@ -204,7 +204,6 @@ class OTel:
 
     def configure(self, config: Config) -> None:
         """Apply OTel settings from app Config. Call once during app startup."""
-        self._metric_export_interval_millis = config.otel_metric_export_interval_millis
         self.telemetry_enabled = not config.otel_sdk_disabled
 
         if self.telemetry_enabled and not config.otel_exporter_otlp_endpoint:
@@ -422,7 +421,7 @@ class OTel:
             # Create metric reader
             reader = PeriodicExportingMetricReader(
                 exporter=otlp_exporter,
-                export_interval_millis=self._metric_export_interval_millis,
+                export_interval_millis=self._METRIC_EXPORT_INTERVAL_MILLIS,
             )
 
             # Create meter provider

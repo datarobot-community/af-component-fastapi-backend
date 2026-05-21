@@ -28,7 +28,6 @@ class Config(DataRobotAppFrameworkBaseSettings):
 
     otel_exporter_otlp_endpoint: str = ""
     otel_exporter_otlp_headers: str = ""
-    otel_metric_export_interval_millis: int = 5_000
     otel_sdk_disabled: bool = False
 
     @field_validator("otel_sdk_disabled", mode="before")
