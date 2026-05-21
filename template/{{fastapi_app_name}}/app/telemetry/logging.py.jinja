@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from functools import wraps
 from typing import Any, Callable, Coroutine, Dict, ParamSpec, TypeVar, Union
 
-from app.config import FormatType, LogLevel
+from app.telemetry.enums import FormatType, LogLevel
 
 _STANDARD_LOG_RECORD_ATTRS = set(
     logging.LogRecord("", 0, "", 0, "", (), None).__dict__.keys()

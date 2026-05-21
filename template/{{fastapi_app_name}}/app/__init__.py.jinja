@@ -109,6 +109,7 @@ def create_app(
     if config is None:
         config = Config()
 
+    otel.configure(config)
     init_logging(level=config.log_level, format_type=config.log_format)
 
     # Configure uvicorn logging with health check filtering and custom formatting
