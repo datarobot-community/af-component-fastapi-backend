@@ -226,7 +226,9 @@ class OTel:
         # directly at construction time) use the endpoint configured via pulumi_config.json
         # rather than falling back to localhost:4318.
         if config.otel_exporter_otlp_endpoint:
-            os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = config.otel_exporter_otlp_endpoint
+            os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = (
+                config.otel_exporter_otlp_endpoint
+            )
         if config.otel_exporter_otlp_headers:
             os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = config.otel_exporter_otlp_headers
 
