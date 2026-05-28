@@ -145,6 +145,24 @@ class OTLPConnectionErrorFilter(logging.Filter):
             if "ConnectionError" in message and ":4318" in message:
                 should_suppress = True
 
+        # Suppress opentelemetry SDK export errors caused by connection failures
+        if (
+            not should_suppress
+            and record.name.startswith("opentelemetry.sdk.")
+            and record.levelno == logging.ERROR
+        ):
+            if record.exc_info:
+                exc = record.exc_info[1]
+                while exc is not None:
+                    if type(exc).__name__ in (
+                        "ConnectionError",
+                        "NewConnectionError",
+                        "MaxRetryError",
+                    ):
+                        should_suppress = True
+                        break
+                    exc = exc.__cause__ or exc.__context__
+
         if should_suppress:
             if self.warning_callback:
                 self.warning_callback()
@@ -204,6 +222,16 @@ class OTel:
 
     def configure(self, config: Config) -> None:
         """Apply OTel settings from app Config. Call once during app startup."""
+        # Mirror config values into os.environ so OTLP exporters (which read env vars
+        # directly at construction time) use the endpoint configured via pulumi_config.json
+        # rather than falling back to localhost:4318.
+        if config.otel_exporter_otlp_endpoint:
+            os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = (
+                config.otel_exporter_otlp_endpoint
+            )
+        if config.otel_exporter_otlp_headers:
+            os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = config.otel_exporter_otlp_headers
+
         self.telemetry_enabled = not config.otel_sdk_disabled
 
         if self.telemetry_enabled and not config.otel_exporter_otlp_endpoint:
@@ -262,6 +290,14 @@ class OTel:
         # Apply to requests logger
         requests_logger = logging.getLogger("requests")
         requests_logger.addFilter(otlp_filter)
+
+        # Apply to opentelemetry SDK export loggers
+        for sdk_logger_name in (
+            "opentelemetry.sdk._logs._internal.export",
+            "opentelemetry.sdk.trace.export",
+            "opentelemetry.sdk.metrics.export",
+        ):
+            logging.getLogger(sdk_logger_name).addFilter(otlp_filter)
 
     def _log_otlp_warning(self) -> None:
         """Log a warning about OTLP connection failure (only once)."""
