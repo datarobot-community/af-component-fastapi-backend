@@ -79,7 +79,7 @@ except ImportError:
 try:
     from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 except ImportError:
-    HTTPXClientInstrumentor = None
+    HTTPXClientInstrumentor = None  # type: ignore[assignment, misc]
 
 try:
     from opentelemetry.instrumentation.logging import LoggingInstrumentor
