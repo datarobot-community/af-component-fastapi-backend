@@ -214,10 +214,6 @@ class OTel:
 
         self._install_otlp_error_filter()
 
-        if not self._auto_instrumentation_setup:
-            self._setup_auto_instrumentation()
-            self._auto_instrumentation_setup = True
-
         self._initialized = True
 
     def configure(self, config: Config) -> None:
@@ -257,6 +253,10 @@ class OTel:
                 "Run `dr start` to get the required credentials, "
                 "then add OTEL_EXPORTER_OTLP_HEADERS to your .env file."
             )
+
+        if self.telemetry_enabled and not self._auto_instrumentation_setup:
+            self._setup_auto_instrumentation()
+            self._auto_instrumentation_setup = True
 
     def _get_resource(self) -> Resource:
         if self._resource is None:
