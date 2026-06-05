@@ -43,10 +43,7 @@ class Config(DataRobotAppFrameworkBaseSettings):
             "DATAROBOT_API_TOKEN", ""
         )
         if entity_id and api_token:
-            return (
-                f"x-datarobot-entity-id={entity_id},"
-                f"x-datarobot-api-key={api_token}"
-            )
+            return f"x-datarobot-entity-id={entity_id},x-datarobot-api-key={api_token}"
         return v
 
     @field_validator("otel_sdk_disabled", mode="before")
