@@ -1,0 +1,6 @@
+display_name: "FastAPI Backend"
+description: "Deploys a DataRobot Custom Application with a FastAPI server."
+tags: []
+repeatable: fastapi_app_name
+dependencies:
+  - base
