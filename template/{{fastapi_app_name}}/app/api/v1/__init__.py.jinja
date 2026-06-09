@@ -1,0 +1,6 @@
+# ruff: noqa: E402
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/v1")
+
+{{ "" | subcomponent_include("app/api/v1/__init__.py") }}

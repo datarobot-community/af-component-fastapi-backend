@@ -24,6 +24,7 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "uvicorn>=0.22.0",
     "itsdangerous>=2.2.0",
+    {{ "" | subcomponent_include("pyproject.toml", indent=4) }}
 ]
 
 [project.optional-dependencies]

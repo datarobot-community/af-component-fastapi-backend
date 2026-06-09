@@ -50,3 +50,5 @@ class Config(DataRobotAppFrameworkBaseSettings):
     @classmethod
     def _coerce_empty_string(cls, v: object) -> object:
         return False if v == "" else v
+
+    {{ "" | subcomponent_include("config.py", indent=4) }}
