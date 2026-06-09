@@ -42,11 +42,10 @@ async def create_deps(
         return
 
     # startup routine
+    _dep_kwargs: dict = dict(config=config)
     {{ "" | subcomponent_include("app/deps_factory.py") }}
-
-    yield Deps(
-        config=config,
-    )
+    _deps = Deps(**_dep_kwargs)
+    yield _deps
 
     # shutdown routine
     {{ "" | subcomponent_include("app/deps_shutdown.py") }}
