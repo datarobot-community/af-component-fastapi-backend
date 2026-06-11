@@ -162,8 +162,7 @@ custom_model_credential_runtime_parameters = [
 APPLICATION_MEMORY_SPACE_ID: Final[str] = "APPLICATION_MEMORY_SPACE_ID"
 {{fastapi_app_name}}_memory_space = pulumi_datarobot.MemorySpace(
     resource_name=f"{{ _external_data.base.template_name }} Memory Space [{PROJECT_NAME}]",
-    name=f"{{ _external_data.base.template_name }} Memory Space [{PROJECT_NAME}]",
-    use_case_id=use_case.id,
+    description=f"{{ _external_data.base.template_name }} Memory Space [{PROJECT_NAME}]",
 )
 {{fastapi_app_name}}_app_runtime_parameters.append(
     pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs(
