@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class Deps:
     config: Config
 
-    {{ "" | subcomponent_include("app/deps_fields.py", indent=4) }}
+{{ "" | subcomponent_include("app/deps_fields.py", indent=4) }}
 
 
 @asynccontextmanager
@@ -43,9 +43,9 @@ async def create_deps(
 
     # startup routine
     _dep_kwargs: dict = dict(config=config)
-    {{ "" | subcomponent_include("app/deps_factory.py") }}
+{{ "" | subcomponent_include("app/deps_factory.py", indent=4) }}
     _deps = Deps(**_dep_kwargs)
     yield _deps
 
     # shutdown routine
-    {{ "" | subcomponent_include("app/deps_shutdown.py") }}
+{{ "" | subcomponent_include("app/deps_shutdown.py", indent=4) }}
