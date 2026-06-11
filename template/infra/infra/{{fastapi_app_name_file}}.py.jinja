@@ -19,10 +19,12 @@ from typing import Final, Sequence
 
 import pulumi
 import pulumi_datarobot
+from datarobot_pulumi_utils.pulumi import export
+from datarobot_pulumi_utils.pulumi.stack import PROJECT_NAME
 from datarobot_pulumi_utils.schema.apps import ApplicationSourceArgs
 from datarobot_pulumi_utils.schema.apps import CustomAppResourceBundles
 from datarobot_pulumi_utils.schema.exec_envs import RuntimeEnvironments
-from datarobot_pulumi_utils.pulumi.stack import PROJECT_NAME
+
 
 from . import project_dir, use_case
 
@@ -171,7 +173,7 @@ APPLICATION_MEMORY_SPACE_ID: Final[str] = "APPLICATION_MEMORY_SPACE_ID"
         value={{fastapi_app_name}}_memory_space.id,
     ),
 )
-pulumi.export(APPLICATION_MEMORY_SPACE_ID, {{fastapi_app_name}}_memory_space.id)
+export(APPLICATION_MEMORY_SPACE_ID, {{fastapi_app_name}}_memory_space.id)
 {% endif %}
 {{fastapi_app_name}}_app_source = pulumi_datarobot.ApplicationSource(
     files=get_{{fastapi_app_name}}_app_files(runtime_parameter_values={{fastapi_app_name}}_app_runtime_parameters),
@@ -193,8 +195,8 @@ pulumi.export(APPLICATION_MEMORY_SPACE_ID, {{fastapi_app_name}}_memory_space.id)
     opts=pulumi.ResourceOptions(depends_on=[{{fastapi_app_name}}_app_source]),
 )
 
-pulumi.export({{fastapi_app_name}}_app_env_name, {{fastapi_app_name}}_app.id)
-pulumi.export(
+export({{fastapi_app_name}}_app_env_name, {{fastapi_app_name}}_app.id)
+export(
     {{fastapi_app_name}}_app_resource_name,
     {{fastapi_app_name}}_app.application_url,
 )
