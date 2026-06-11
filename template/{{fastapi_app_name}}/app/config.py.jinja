@@ -17,6 +17,7 @@ from datarobot.core.config import DataRobotAppFrameworkBaseSettings
 from pydantic import ValidationInfo, field_validator
 
 from app.telemetry.enums import FormatType, LogLevel
+{{ "" | subcomponent_include("config_imports.py") }}
 
 
 class Config(DataRobotAppFrameworkBaseSettings):

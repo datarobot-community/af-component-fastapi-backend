@@ -14,9 +14,13 @@
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import AsyncGenerator
+from typing import TYPE_CHECKING, AsyncGenerator
 
 from app.config import Config
+
+if TYPE_CHECKING:
+    pass
+{{ "" | subcomponent_include("app/deps_type_imports.py", indent=4) }}
 
 logger = logging.getLogger(__name__)
 
