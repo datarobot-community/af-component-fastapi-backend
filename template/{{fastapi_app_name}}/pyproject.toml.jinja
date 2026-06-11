@@ -27,7 +27,7 @@ dependencies = [
     {{ "" | subcomponent_include("pyproject.toml", indent=4) }}
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest-cov>=6.1.1",
     "pytest>=7.4.0",
