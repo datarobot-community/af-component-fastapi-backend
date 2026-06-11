@@ -31,9 +31,26 @@ tasks:
     desc: "🔨 Run the development server"
     deps:
       - auth-check
+{% if 'fastapi_auth' in my_transitive_reverse_dependency_modules %}
+    env:
+      TEST_USER_EMAIL: developer@example.com
+{% endif %}
     cmds:
       - echo "🔨 Starting development server"
+{% if 'react' in my_transitive_reverse_dependency_modules %}
+      - cd ../{% for _dep_label in my_transitive_reverse_dependencies %}{% if label_modules[_dep_label] | module_short_name == 'react' %}{{ label_answers[_dep_label].react_app_name }}{% endif %}{% endfor %} && task build && cd ../{{ fastapi_app_name }}
+{% endif %}
+{% if 'fastapi_memory' in my_transitive_reverse_dependency_modules %}
+      - |
+        _memory_space_id=$(python3 -c "import json,sys; d=json.load(open('../pulumi_config.json')); sys.stdout.write(d.get('APPLICATION_MEMORY_SPACE_ID',''))" 2>/dev/null || echo "")
+        if [ -z "$_memory_space_id" ]; then
+          echo "❌ APPLICATION_MEMORY_SPACE_ID not found in pulumi_config.json. Run 'task -d ../infra deploy-dev' first."
+          exit 1
+        fi
+        APPLICATION_MEMORY_SPACE_ID="$_memory_space_id" PYTHONPATH="$CALCULATED_PYTHONPATH" uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
+{% else %}
       - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
+{% endif %}
 
   lint:
     silent: true

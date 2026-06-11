@@ -158,7 +158,22 @@ custom_model_credential_runtime_parameters = [
         value=session_secret_cred.id,
     ),
 ]
-
+{% if 'fastapi_memory' in my_transitive_reverse_dependency_modules %}
+APPLICATION_MEMORY_SPACE_ID: Final[str] = "APPLICATION_MEMORY_SPACE_ID"
+{{fastapi_app_name}}_memory_space = pulumi_datarobot.MemorySpace(
+    resource_name=f"{{ _external_data.base.template_name }} Memory Space [{PROJECT_NAME}]",
+    name=f"{{ _external_data.base.template_name }} Memory Space [{PROJECT_NAME}]",
+    use_case_id=use_case.id,
+)
+{{fastapi_app_name}}_app_runtime_parameters.append(
+    pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs(
+        type="string",
+        key=APPLICATION_MEMORY_SPACE_ID,
+        value={{fastapi_app_name}}_memory_space.id,
+    ),
+)
+pulumi.export(APPLICATION_MEMORY_SPACE_ID, {{fastapi_app_name}}_memory_space.id)
+{% endif %}
 {{fastapi_app_name}}_app_source = pulumi_datarobot.ApplicationSource(
     files=get_{{fastapi_app_name}}_app_files(runtime_parameter_values={{fastapi_app_name}}_app_runtime_parameters),
     runtime_parameter_values={{fastapi_app_name}}_app_runtime_parameters,
