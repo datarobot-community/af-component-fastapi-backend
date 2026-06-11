@@ -14,7 +14,7 @@
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, AsyncGenerator
+from typing import TYPE_CHECKING, Any, AsyncGenerator
 
 from app.config import Config
 
@@ -46,7 +46,7 @@ async def create_deps(
         return
 
     # startup routine
-    _dep_kwargs: dict = dict(config=config)
+    _dep_kwargs: dict[str, Any] = dict(config=config)
 {{ "" | subcomponent_include("app/deps_factory.py", indent=4) }}
     _deps = Deps(**_dep_kwargs)
     yield _deps

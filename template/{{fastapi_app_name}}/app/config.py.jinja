@@ -52,4 +52,8 @@ class Config(DataRobotAppFrameworkBaseSettings):
     def _coerce_empty_string(cls, v: object) -> object:
         return False if v == "" else v
 
+    datarobot_endpoint: str = ""
+    datarobot_api_token: str = ""
+    application_id: str | None = None
+
 {{ "" | subcomponent_include("config.py", indent=4) }}
