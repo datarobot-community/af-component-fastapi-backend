@@ -33,7 +33,7 @@ tasks:
       - auth-check
     cmds:
       - echo "🔨 Starting development server"
-      - task -d ../infra dev &
+      - (cd .. && DR_SKIP_PLUGIN_UPDATE_CHECK=true dr xp --plain-output &)
       - PYTHONPATH="$CALCULATED_PYTHONPATH" uv run uvicorn app.main:app --host 0.0.0.0 --port {{ fastapi_local_port }} --reload
 
   lint:
