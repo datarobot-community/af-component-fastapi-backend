@@ -32,6 +32,7 @@ class Config(DataRobotAppFrameworkBaseSettings):
     otel_exporter_otlp_endpoint: str = ""
     otel_exporter_otlp_headers: str = ""
     otel_sdk_disabled: bool = False
+    profiling_enabled: bool = False
 
     @field_validator("otel_exporter_otlp_headers", mode="before")
     @classmethod
