@@ -53,8 +53,9 @@ from opentelemetry.sdk.metrics.export import (
 )
 from opentelemetry.sdk.metrics.view import ExponentialBucketHistogramAggregation
 from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace import ReadableSpan, TracerProvider
+from opentelemetry.sdk.trace import Span as SdkSpan
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, SpanProcessor
 from opentelemetry.trace import Span
 from typing_extensions import ParamSpec, Self, TypeVar
 
@@ -169,6 +170,35 @@ class OTLPConnectionErrorFilter(logging.Filter):
             return False
 
         return True
+
+
+class FilteringSpanProcessor(SpanProcessor):
+    """SpanProcessor that drops low-value internal spans before export.
+
+    Wraps a delegate processor and filters out spans by name (e.g. SQLAlchemy
+    "connect" spans that clutter traces without adding diagnostic value).
+    """
+
+    _FILTERED_SPAN_NAMES: frozenset[str] = frozenset({"connect"})
+
+    def __init__(self, delegate: SpanProcessor) -> None:
+        self._delegate = delegate
+
+    def on_start(
+        self, span: SdkSpan, parent_context: Optional[context.Context] = None
+    ) -> None:
+        self._delegate.on_start(span, parent_context)
+
+    def on_end(self, span: ReadableSpan) -> None:
+        if span.name in self._FILTERED_SPAN_NAMES:
+            return
+        self._delegate.on_end(span)
+
+    def shutdown(self) -> None:
+        self._delegate.shutdown()
+
+    def force_flush(self, timeout_millis: int = 30000) -> bool:
+        return self._delegate.force_flush(timeout_millis)
 
 
 class OTel:
@@ -496,9 +526,8 @@ class OTel:
         try:
             otlp_exporter = OTLPSpanExporter()
 
-            # Create batch processor
             batch_processor = BatchSpanProcessor(otlp_exporter)
-            tracer_provider.add_span_processor(batch_processor)
+            tracer_provider.add_span_processor(FilteringSpanProcessor(batch_processor))
         except Exception as e:
             logging.getLogger(__name__).warning(
                 f"Failed to initialize OTLP tracing exporter: {e}"
