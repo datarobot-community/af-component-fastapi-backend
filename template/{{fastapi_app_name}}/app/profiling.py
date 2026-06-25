@@ -15,7 +15,7 @@
 from pyinstrument import Profiler
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 
 class PyInstrumentMiddleware:
@@ -39,10 +39,13 @@ class PyInstrumentMiddleware:
             await self.app(scope, receive, send)
             return
 
+        async def null_send(message: Message) -> None:
+            pass
+
         profiler = Profiler(async_mode="enabled")
         profiler.start()
         try:
-            await self.app(scope, receive, send)
+            await self.app(scope, receive, null_send)
         finally:
             profiler.stop()
 
