@@ -28,6 +28,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import Config
 from app.deps import Deps, create_deps
+from app.profiling import PyInstrumentMiddleware
 from app.telemetry import configure_uvicorn_logging, init_logging, otel
 
 base_router = APIRouter()
@@ -154,6 +155,9 @@ def create_app(
         max_age=config.session_max_age,
         https_only=config.session_https_only,
     )
+
+    if config.profiling_enabled:
+        app.add_middleware(PyInstrumentMiddleware)
 
     app.include_router(base_router)
 
