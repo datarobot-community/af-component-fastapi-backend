@@ -25,11 +25,11 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
 
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v6"
 
       # Ref: https://docs.astral.sh/uv/guides/integration/github/#installation
       - name: Setup uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           working-directory: {{ fastapi_app_name }}
           enable-cache: true
@@ -49,6 +49,14 @@ jobs:
       - name: Run Static Checks
         working-directory: {{ fastapi_app_name }}
         run: task lint-check
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend_web
+        run: task install
+
+      - name: Build static Frontend files
+        working-directory: frontend_web
+        run: task build
 
       - name: Test
         working-directory: {{ fastapi_app_name }}
