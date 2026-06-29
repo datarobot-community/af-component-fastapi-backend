@@ -50,14 +50,6 @@ jobs:
         working-directory: {{ fastapi_app_name }}
         run: task lint-check
 
-      - name: Install Frontend Dependencies
-        working-directory: frontend_web
-        run: task install
-
-      - name: Build static Frontend files
-        working-directory: frontend_web
-        run: task build
-
       - name: Test
         working-directory: {{ fastapi_app_name }}
         run: task test
