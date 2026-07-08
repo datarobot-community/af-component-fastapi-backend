@@ -16,7 +16,11 @@ import os
 from datarobot.core.config import DataRobotAppFrameworkBaseSettings
 from pydantic import ValidationInfo, field_validator
 
+{% if include_app_telemetry -%}
 from app.telemetry.enums import FormatType, LogLevel
+{%- else -%}
+from core.telemetry.enums import FormatType, LogLevel
+{%- endif %}
 
 
 class Config(DataRobotAppFrameworkBaseSettings):
