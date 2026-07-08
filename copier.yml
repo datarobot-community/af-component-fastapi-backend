@@ -26,6 +26,14 @@ api_key_scope_level:
     - user
     - admin
 
+include_app_telemetry:
+  type: bool
+  default: true
+  help: |
+    Render the telemetry package inside this app (app/telemetry)?
+    Disable if telemetry is centralized elsewhere (e.g. moved into core).
+    Generated code will then import from core.telemetry instead.
+
 base_answers_file:
   type: str
   default: ".datarobot/answers/base.yml"
@@ -39,3 +47,6 @@ _external_data:
 _subdirectory: template
 _answers_file: ".datarobot/answers/fastapi-{{ fastapi_app_name }}.yml"
 _preserve_symlinks: true
+
+_exclude:
+  - "{% if not include_app_telemetry %}{{ fastapi_app_name }}/app/telemetry/**{% endif %}"
