@@ -570,14 +570,11 @@ class OTel:
             return
 
         if self._logger_provider:
-            self._logger_provider.shutdown()
+            self._logger_provider.shutdown()  # type: ignore[no-untyped-call]
         if self._meter_provider:
             self._meter_provider.shutdown()
         if self._tracer_provider:
-            self._tracer_provider.shutdown()
-
-        # Allow time for final exports (as seen in datavolt examples)
-        time.sleep(1)
+            self._tracer_provider.shutdown()  # type: ignore[no-untyped-call]
 
     def log_application_start(self, application_name: str = "Application") -> None:
         """
