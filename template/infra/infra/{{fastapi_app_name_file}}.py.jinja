@@ -102,7 +102,7 @@ session_secret_cred = pulumi_datarobot.ApiTokenCredential(
     "DATAROBOT_DEFAULT_APPLICATION_EXECUTION_ENVIRONMENT", ""
 ).strip()
 {{fastapi_app_name}}_base_environment_id = (
-    app_exec_env or RuntimeEnvironments.PYTHON_312_APPLICATION_BASE.value.id
+    {{fastapi_app_name}}_exec_env or RuntimeEnvironments.PYTHON_312_APPLICATION_BASE.value.id
 )
 
 {{fastapi_app_name}}_app_source_args = ApplicationSourceArgs(
