@@ -98,9 +98,16 @@ session_secret_cred = pulumi_datarobot.ApiTokenCredential(
 {{fastapi_app_name}}_app_env_name: str = "DATAROBOT_APPLICATION_ID"
 {{fastapi_app_name}}_application_path = project_dir.parent / "{{fastapi_app_name}}"
 
+{{fastapi_app_name}}_exec_env = os.environ.get(
+    "DATAROBOT_DEFAULT_APPLICATION_EXECUTION_ENVIRONMENT", ""
+).strip()
+{{fastapi_app_name}}_base_environment_id = (
+    {{fastapi_app_name}}_exec_env or RuntimeEnvironments.PYTHON_312_APPLICATION_BASE.value.id
+)
+
 {{fastapi_app_name}}_app_source_args = ApplicationSourceArgs(
     resource_name=f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]",
-    base_environment_id=RuntimeEnvironments.PYTHON_312_APPLICATION_BASE.value.id,
+    base_environment_id={{fastapi_app_name}}_base_environment_id,
 ).model_dump(mode="json", exclude_none=True)
 
 {{fastapi_app_name}}_app_resource_name: str = f"{{ _external_data.base.template_name }} [{PROJECT_NAME}]"
