@@ -47,9 +47,7 @@ def test_instrumenting_the_app_configures_the_meter_provider(
     otel.instrument_fastapi_app(FastAPI())
 
     assert otel._meter_provider is not None
-    otel_module.metrics.set_meter_provider.assert_called_once_with(  # type: ignore[attr-defined]
-        otel._meter_provider
-    )
+    otel_module.metrics.set_meter_provider.assert_called_once_with(otel._meter_provider)
 
 
 def test_instrumenting_the_app_leaves_the_meter_provider_unset_when_telemetry_is_disabled(
@@ -60,4 +58,4 @@ def test_instrumenting_the_app_leaves_the_meter_provider_unset_when_telemetry_is
     otel.instrument_fastapi_app(FastAPI())
 
     assert otel._meter_provider is None
-    otel_module.metrics.set_meter_provider.assert_not_called()  # type: ignore[attr-defined]
+    otel_module.metrics.set_meter_provider.assert_not_called()
