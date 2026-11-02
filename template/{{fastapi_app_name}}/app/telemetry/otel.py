@@ -362,7 +362,7 @@ class OTel:
 
     def instrument_fastapi_app(self, app: FastAPI) -> None:
         """
-        Instrument a FastAPI application for automatic tracing.
+        Instrument a FastAPI application for automatic tracing and HTTP metrics.
 
         This should be called after creating your FastAPI app instance.
 
@@ -382,9 +382,13 @@ class OTel:
             return
 
         try:
-            # Ensure tracer provider/exporter is configured before instrumenting FastAPI
+            # Ensure the tracer and meter providers are configured before instrumenting
+            # FastAPI, so that its spans and HTTP metrics are exported. The meter provider
+            # otherwise starts only when some code asks for a meter.
             if self.telemetry_enabled and not self._tracer_provider:
                 self.configure_tracing()
+            if self.telemetry_enabled and not self._meter_provider:
+                self.configure_metrics()
 
             FastAPIInstrumentor.instrument_app(
                 app,
